@@ -31,6 +31,13 @@ proguard/
 
 # Android Studio captures folder
 captures/
+.idea
+app/app.iml
+app/src/androidTest
+app/src/test
+gradlew
+gradlew.bat
+MyClass.iml
 
 # =========================
 # Operating System Files
