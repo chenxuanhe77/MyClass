@@ -24,7 +24,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import space.levan.myclass.R;
-import space.levan.myclass.utils.LoginUtils;
+import space.levan.myclass.utils.InfoUtils;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -52,15 +52,21 @@ public class MainActivity extends AppCompatActivity
 
         mNavigationView.setNavigationItemSelectedListener(this);
 
-        Map<String,String> userInfo = LoginUtils.getUserInfo(MainActivity.this);
+        Map<String,String> userInfo = InfoUtils.getUserInfo(MainActivity.this);
         if (userInfo != null) {
             if (userInfo.get("token") != null) {
                 Toast.makeText(MainActivity.this,"登录状态",Toast.LENGTH_SHORT).show();
             }else {
-                Toast.makeText(MainActivity.this,"您还没有登录",Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this,LoginActivity.class);
+                startActivity(intent);
+                this.finish();
             }
         }else {
-            Toast.makeText(MainActivity.this,"您还没有登录",Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent();
+            intent.setClass(MainActivity.this,LoginActivity.class);
+            startActivity(intent);
+            this.finish();
         }
     }
 
@@ -117,7 +123,7 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_manage) {
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_mail) {
 
         } else if (id == R.id.nav_signOut) {
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -126,10 +132,11 @@ public class MainActivity extends AppCompatActivity
             builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    LoginUtils.deleteUserInfo(MainActivity.this);
+                    InfoUtils.deleteUserInfo(MainActivity.this);
                     Intent intent = new Intent();
                     intent.setClass(MainActivity.this,LoginActivity.class);
                     startActivity(intent);
+                    MainActivity.this.finish();
                 }
             });
             builder.create();
