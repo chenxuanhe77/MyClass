@@ -1,5 +1,6 @@
 package space.levan.myclass.view.ui;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -13,7 +14,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import space.levan.myclass.R;
-import space.levan.myclass.Service.LoginService;
+import space.levan.myclass.utils.LoginUtils;
 
 /**
  * Created by 339 on 2016/4/15.
@@ -68,7 +69,7 @@ public class LoginActivity extends AppCompatActivity{
 
         new Thread() {
             public void run() {
-                final String result = LoginService.loginByGet(username,password);
+                final String result = LoginUtils.loginByGet(username,password);
                 if (result != null) {
                     runOnUiThread(new Runnable() {
                         @Override
@@ -77,8 +78,15 @@ public class LoginActivity extends AppCompatActivity{
                                 JSONTokener jsonTokener = new JSONTokener(result);
                                 JSONObject jsonObject = (JSONObject) jsonTokener.nextValue();
                                 if (jsonObject.getInt("error") ==0 ) {
-                                    Toast.makeText(LoginActivity.this,"ERROR:"+jsonObject.getInt("error")
-                                            + "\nTOKEN:"+jsonObject.getString("token"),Toast.LENGTH_SHORT).show();
+                                    String token = jsonObject.getString("token");
+                                    boolean isSaveSuccess = LoginUtils.saveUserInfo(LoginActivity.this,username,token);
+                                    if (isSaveSuccess) {
+                                        Toast.makeText(LoginActivity.this,"登录成功",Toast.LENGTH_SHORT).show();
+                                        finish();
+                                    } else {
+                                        Toast.makeText(LoginActivity.this,"登录失败",Toast.LENGTH_SHORT).show();
+                                    }
+
                                 }else if (jsonObject.getInt("error") == 1) {
                                     Toast.makeText(LoginActivity.this,""+jsonObject.get("message"),
                                             Toast.LENGTH_SHORT).show();
