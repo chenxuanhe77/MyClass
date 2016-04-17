@@ -4,18 +4,18 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
-import android.view.KeyEvent;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import java.util.Map;
@@ -29,15 +29,22 @@ import space.levan.myclass.utils.InfoUtils;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    @Bind(R.id.toolbar) Toolbar mToolbar;
-    @Bind(R.id.drawer_layout) DrawerLayout mDrawer;
-    @Bind(R.id.nav_view) NavigationView mNavigationView;
-    @Bind(R.id.coordinatorLayout) CoordinatorLayout mContainer;
 
-    @OnClick(R.id.fab) void onClick(View view){
+    @Bind(R.id.toolbar)
+    Toolbar mToolbar;
+    @Bind(R.id.coordinatorLayout)
+    CoordinatorLayout mContainer;
+    @Bind(R.id.nav_view)
+    NavigationView mNavigationView;
+    @Bind(R.id.drawer_layout)
+    DrawerLayout mDrawer;
+
+    @OnClick(R.id.fab)
+    public void onClick(View view) {
         Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,19 +59,19 @@ public class MainActivity extends AppCompatActivity
 
         mNavigationView.setNavigationItemSelectedListener(this);
 
-        Map<String,String> userInfo = InfoUtils.getUserInfo(MainActivity.this);
+        Map<String, String> userInfo = InfoUtils.getUserInfo(MainActivity.this);
         if (userInfo != null) {
             if (userInfo.get("token") != null) {
-                Toast.makeText(MainActivity.this,"登录状态",Toast.LENGTH_SHORT).show();
-            }else {
+                Toast.makeText(MainActivity.this, "登录状态", Toast.LENGTH_SHORT).show();
+            } else {
                 Intent intent = new Intent();
-                intent.setClass(MainActivity.this,LoginActivity.class);
+                intent.setClass(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
                 this.finish();
             }
-        }else {
+        } else {
             Intent intent = new Intent();
-            intent.setClass(MainActivity.this,LoginActivity.class);
+            intent.setClass(MainActivity.this, LoginActivity.class);
             startActivity(intent);
             this.finish();
         }
@@ -82,6 +89,7 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * 以下两个函数用于创建右上角按钮以及点击事件
+     *
      * @param menu
      * @return
      */
@@ -89,7 +97,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         //getMenuInflater().inflate(R.menu.main, menu);
-        menu.add(0,1,0,R.string.home_about);
+        menu.add(0, 1, 0, R.string.home_about);
         return true;
     }
 
@@ -101,7 +109,7 @@ public class MainActivity extends AppCompatActivity
         switch (item.getItemId()) {
             case 1:
                 Intent intent = new Intent();
-                intent.setClass(MainActivity.this,AboutActivity.class);
+                intent.setClass(MainActivity.this, AboutActivity.class);
                 startActivity(intent);
                 break;
         }
@@ -134,7 +142,7 @@ public class MainActivity extends AppCompatActivity
                 public void onClick(DialogInterface dialog, int which) {
                     InfoUtils.deleteUserInfo(MainActivity.this);
                     Intent intent = new Intent();
-                    intent.setClass(MainActivity.this,LoginActivity.class);
+                    intent.setClass(MainActivity.this, LoginActivity.class);
                     startActivity(intent);
                     MainActivity.this.finish();
                 }
