@@ -132,7 +132,9 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_mail) {
-
+            Intent intent = new Intent();
+            intent.setClass(MainActivity.this,MailListActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_signOut) {
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("提示");
@@ -150,8 +152,6 @@ public class MainActivity extends AppCompatActivity
             builder.create();
             AlertDialog dialog = builder.show();
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).
-                    setTextColor(getResources().getColor(R.color.colorPrimary));
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).
                     setTextColor(getResources().getColor(R.color.colorPrimary));
         }
 
