@@ -54,7 +54,8 @@ public class MailListActivity extends AppCompatActivity {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                HashMap<String,String> mMap = (HashMap<String, String>)mListView.getItemAtPosition(position);
+                HashMap<String,String> mMap = (HashMap<String,String>)
+                        mListView.getItemAtPosition(position);
                 String mStuTEL = mMap.get("StuTEL").replace("电话：","").trim();
                 String mStuName = mMap.get("StuName").replace("姓名：","").trim();
                 if(mStuTEL.equals("")) {
@@ -77,8 +78,8 @@ public class MailListActivity extends AppCompatActivity {
 
             public void run() {
 
-                Map<String, String> getToken = InfoUtils.getUserInfo(MailListActivity.this);
-                final String mToken = getToken.get("token");
+                Map<String, String> getToken = InfoUtils.getLoginInfo(MailListActivity.this);
+                final String mToken = getToken.get("StuToken");
                 final String result = NetUtils.getMailList(mToken);
 
                 if(result != null) {
@@ -141,6 +142,7 @@ public class MailListActivity extends AppCompatActivity {
      */
 
     public void Call(String mStuName,String mStuTEL) {
+
         final String StuTEL = mStuTEL;
         AlertDialog.Builder builder = new AlertDialog.Builder(MailListActivity.this);
         builder.setTitle("提示");

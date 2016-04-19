@@ -44,8 +44,17 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
+     * 封装的Intent
+     * @param cls
+     */
+    public void initIntent(Class cls) {
+        Intent intent = new Intent();
+        intent.setClass(LoginActivity.this,cls);
+        startActivity(intent);
+    }
+
+    /**
      * 开启新线程用于登录
-     *
      * @param view
      */
 
@@ -65,12 +74,10 @@ public class LoginActivity extends AppCompatActivity {
                                 JSONObject jsonObject = (JSONObject) jsonTokener.nextValue();
                                 if (jsonObject.getInt("error") == 0) {
                                     String token = jsonObject.getString("token");
-                                    boolean isSaveSuccess = InfoUtils.saveUserInfo(LoginActivity.this, username, token);
+                                    boolean isSaveSuccess = InfoUtils.saveUserInfo(LoginActivity.this,token);
                                     if (isSaveSuccess) {
                                         Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent();
-                                        intent.setClass(LoginActivity.this, MainActivity.class);
-                                        startActivity(intent);
+                                        initIntent(MainActivity.class);
                                         finish();
                                     } else {
                                         Toast.makeText(LoginActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
