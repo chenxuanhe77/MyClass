@@ -4,6 +4,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
@@ -130,53 +132,78 @@ public class MainActivity extends AppCompatActivity
         final TextView mStuName = (TextView)view.findViewById(R.id.nav_name);
         final TextView mStuID = (TextView)view.findViewById(R.id.nav_id);
 
-        new Thread() {
-            public void run() {
-                final String result = NetUtils.getUserInfo(mToken);
-                if (result != null) {
-                    try {
-                        JSONTokener jsonTokener = new JSONTokener(result);
-                        JSONObject jsonObject = (JSONObject) jsonTokener.nextValue();
-                        if (jsonObject.getInt("error") == 0) {
-                            JSONObject object = new JSONObject(result).getJSONObject("data");
-                            String StuID = object.getString("xuehao");
-                            String StuName = object.getString("name");
-                            String StuQQ = object.getString("QQ");
-                            String StuTEL = object.getString("tel");
-                            String StuAvatar = object.getString("avatar");
-                            boolean isSaveSuccess = InfoUtils.saveUserInfo(MainActivity.this, StuID,
-                                    StuName,StuQQ,StuTEL,StuAvatar);
-                            byte[] Avatar = NetUtils.getUserAvatar(StuAvatar);
-                            final Bitmap bitmap = BitmapFactory.decodeByteArray(Avatar,0,Avatar.length);
-                            if (isSaveSuccess) {
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        if (networkInfo == null||!networkInfo.isAvailable()) {
+            Map<String, String> userInfo = InfoUtils.getUserInfo(MainActivity.this);
+            if(userInfo != null) {
+                mStuID.setText(userInfo.get("StuID"));
+                mStuName.setText(userInfo.get("StuName"));
+            } else {
+                mStuID.setText("");
+                mStuName.setText("");
+            }
+        } else {
+            new Thread() {
+                public void run() {
+                    final String result = NetUtils.getUserInfo(mToken);
+                    if (result != null) {
+                        try {
+                            JSONTokener jsonTokener = new JSONTokener(result);
+                            JSONObject jsonObject = (JSONObject) jsonTokener.nextValue();
+                            final String message = jsonObject.getString("message");
+                            if (jsonObject.getInt("error") == 0) {
+                                JSONObject object = new JSONObject(result).getJSONObject("data");
+                                String StuID = object.getString("xuehao");
+                                String StuName = object.getString("name");
+                                String StuQQ = object.getString("QQ");
+                                String StuTEL = object.getString("tel");
+                                String StuAvatar = object.getString("avatar");
+                                boolean isSaveSuccess = InfoUtils.saveUserInfo(MainActivity.this, StuID,
+                                        StuName,StuQQ,StuTEL,StuAvatar);
+                                byte[] Avatar = NetUtils.getUserAvatar(StuAvatar);
+                                final Bitmap bitmap = BitmapFactory.decodeByteArray(Avatar,0,Avatar.length);
+                                if (isSaveSuccess) {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Map<String, String> userInfo = InfoUtils.getUserInfo(MainActivity.this);
+                                            mStuID.setText(userInfo.get("StuID"));
+                                            mStuName.setText(userInfo.get("StuName"));
+                                            mStuAvatar.setImageBitmap(bitmap);
+                                        }
+                                    });
+                                } else {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(MainActivity.this,"信息保存失败",Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
+                            } else if(jsonObject.getInt("error") == 2) {
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Map<String, String> userInfo = InfoUtils.getUserInfo(MainActivity.this);
-                                        mStuID.setText(userInfo.get("StuID"));
-                                        mStuName.setText(userInfo.get("StuName"));
-                                        mStuAvatar.setImageBitmap(bitmap);
-                                    }
-                                });
-                            } else {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(MainActivity.this,"信息保存失败",Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(MainActivity.this,""+message,Toast.LENGTH_SHORT).show();
                                     }
                                 });
                             }
-                        } else if(jsonObject.getInt("error") == 2) {
-                            Toast.makeText(MainActivity.this,jsonObject.getString("message"),Toast.LENGTH_SHORT).show();
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    } else {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(MainActivity.this,"获取信息失败",Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
-                } else {
-                    Toast.makeText(MainActivity.this,"获取信息失败",Toast.LENGTH_SHORT).show();
                 }
-            }
-        }.start();
+            }.start();
+
+        }
     }
 
     @Override
