@@ -66,32 +66,36 @@ public class LoginActivity extends AppCompatActivity {
             public void run() {
                 final String result = NetUtils.loginByGet(username, password);
                 if (result != null) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                JSONTokener jsonTokener = new JSONTokener(result);
-                                JSONObject jsonObject = (JSONObject) jsonTokener.nextValue();
-                                if (jsonObject.getInt("error") == 0) {
-                                    String token = jsonObject.getString("token");
-                                    boolean isSaveSuccess = InfoUtils.saveUserInfo(LoginActivity.this,token);
-                                    if (isSaveSuccess) {
+                    try {
+                        JSONTokener jsonTokener = new JSONTokener(result);
+                        JSONObject jsonObject = (JSONObject) jsonTokener.nextValue();
+                        if (jsonObject.getInt("error") == 0) {
+                            String token = jsonObject.getString("token");
+                            boolean isSaveSuccess = InfoUtils.saveUserInfo(LoginActivity.this,token);
+                            if (isSaveSuccess) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
                                         Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
                                         initIntent(MainActivity.class);
                                         finish();
-                                    } else {
+                                    }
+                                });
+                            }else {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
                                         Toast.makeText(LoginActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
                                     }
-
-                                } else if (jsonObject.getInt("error") == 1) {
-                                    Toast.makeText(LoginActivity.this, "" + jsonObject.get("message"),
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                            } catch (Exception e) {
-
+                                });
                             }
+                        } else if(jsonObject.getInt("error") == 1) {
+                            Toast.makeText(LoginActivity.this, "" + jsonObject.get("message"),
+                                    Toast.LENGTH_SHORT).show();
                         }
-                    });
+                    }catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     runOnUiThread(new Runnable() {
                         @Override

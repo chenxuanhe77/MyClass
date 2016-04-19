@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -120,7 +119,7 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * 通过token发起网络请求获取个人详细信息
-     * 
+     *
      * @param mToken
      */
     public void getStuInfo(final String mToken) {
