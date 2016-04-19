@@ -21,6 +21,7 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".view.ui.StuFileActivity" />
         <activity android:name=".view.ui.LoginActivity" />
         <activity android:name=".view.ui.MailListActivity"/>
         <activity android:name=".view.ui.AboutActivity" />

@@ -30,6 +30,7 @@ import java.util.Map;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.hdodenhof.circleimageview.CircleImageView;
 import space.levan.myclass.R;
 import space.levan.myclass.utils.InfoUtils;
 import space.levan.myclass.utils.NetUtils;
@@ -125,7 +126,7 @@ public class MainActivity extends AppCompatActivity
     public void getStuInfo(final String mToken) {
 
         View view = mNavigationView.inflateHeaderView(R.layout.nav_header_main);
-        final ImageView mStuAvatar = (ImageView)view.findViewById(R.id.nav_avatar);
+        final CircleImageView mStuAvatar = (CircleImageView)view.findViewById(R.id.nav_avatar);
         final TextView mStuName = (TextView)view.findViewById(R.id.nav_name);
         final TextView mStuID = (TextView)view.findViewById(R.id.nav_id);
 
@@ -227,8 +228,8 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
+        if (id == R.id.nav_stuFile) {
+            initIntent(StuFileActivity.class);
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
