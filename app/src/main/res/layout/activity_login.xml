@@ -55,12 +55,13 @@
 
                         <Button
                             android:id="@+id/sign_in_button"
-                            android:onClick="Login"
                             style="?android:textAppearanceSmall"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="16dp"
                             android:text="@string/sign_in"
+                            android:textColor="#FFFFFF"
+                            android:background="#1C86EE"
                             android:textStyle="bold" />
 
                 </LinearLayout>
