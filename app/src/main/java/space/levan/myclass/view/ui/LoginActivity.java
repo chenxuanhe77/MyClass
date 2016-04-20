@@ -61,7 +61,7 @@ public class LoginActivity extends AppCompatActivity {
         mUserName.setCompoundDrawables(drawable,null,null,null);
 
         Drawable drawable1 = getResources().getDrawable(R.drawable.unlocked_32px);
-        drawable1.setBounds(0,0,50,50);
+        drawable1.setBounds(0,0,55,55);
         mPassWord.setCompoundDrawables(drawable1,null,null,null);
 
 

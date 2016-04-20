@@ -12,18 +12,26 @@
     android:fitsSystemWindows="true"
     tools:context="space.levan.myclass.view.ui.LoginActivity">
 
+        <ImageView
+            android:src="@drawable/logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:layout_gravity="center_horizontal" />
+
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:gravity="center"
-            android:layout_marginTop="50dp">
+            android:layout_marginTop="60dp">
 
                 <EditText
                     android:id="@+id/user_name"
                     style="?android:attr/textViewStyle"
                     android:background="@null"
                     android:textSize="18sp"
+                    android:maxLength="10"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="#c2c7cc"
@@ -43,9 +51,10 @@
                 <EditText
                     android:id="@+id/password"
                     style="?android:attr/textViewStyle"
-                    android:drawablePadding="8dp"
+                    android:drawablePadding="7dp"
                     android:background="@null"
                     android:textSize="18sp"
+                    android:maxLength="6"
                     android:layout_marginTop="15dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -67,7 +76,7 @@
                     style="?android:textAppearanceSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="20dp"
                     android:text="@string/sign_in"
                     android:textColor="#FFFFFF"
                     android:background="@drawable/btn_sharp"
