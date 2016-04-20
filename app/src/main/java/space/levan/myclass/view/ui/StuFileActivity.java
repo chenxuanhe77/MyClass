@@ -14,8 +14,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
 import java.util.Map;
-import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -41,17 +44,31 @@ public class StuFileActivity extends AppCompatActivity {
     @Bind(R.id.stu_TEL)
     TextView mStuTEL;
 
+    private static final int TAG_QQ = 1;
+    private static final int TAG_TEL = 2;
+    /**
+     * 正则表达式：验证手机号
+     */
+    public static final String REGEX_MOBILE = "^((13[0-9])|(15[^4,\\D])|(18[0-9]))\\d{8}$";
+
+    /**
+     * 校验手机号
+     *
+     * @param mobile
+     * @return 校验通过返回true，否则返回false
+     */
+    public static boolean isMobile(String mobile) {
+        return Pattern.matches(REGEX_MOBILE, mobile);
+    }
+
     @OnClick({R.id.stu_QQ, R.id.stu_TEL})
     public void onClick(View view) {
-        String str;
         switch (view.getId()) {
             case R.id.stu_QQ:
-                str = mStuQQ.getText().toString().replaceAll("[^QQ]", "");
-                ChangeInfo(str);
+                ChangeInfo(TAG_QQ);
                 break;
             case R.id.stu_TEL:
-                str = mStuTEL.getText().toString().replaceAll("[^电话]", "");
-                ChangeInfo(str);
+                ChangeInfo(TAG_TEL);
                 break;
         }
     }
@@ -69,13 +86,17 @@ public class StuFileActivity extends AppCompatActivity {
         initInfo();
     }
 
+    /**
+     * 从本地获取姓名，QQ，TEL，ID
+     * 从网络获取头像
+     */
     public void initInfo() {
 
         final Map<String, String> userInfo = InfoUtils.getUserInfo(StuFileActivity.this);
-        mStuId.setText("学号：" + userInfo.get("StuID"));
-        mStuName.setText("姓名：" + userInfo.get("StuName"));
-        mStuQQ.setText("QQ：" + userInfo.get("StuQQ"));
-        mStuTEL.setText("电话：" + userInfo.get("StuTEL"));
+        mStuId.setText(userInfo.get("StuID"));
+        mStuName.setText(userInfo.get("StuName"));
+        mStuQQ.setText(userInfo.get("StuQQ"));
+        mStuTEL.setText(userInfo.get("StuTEL"));
 
         /**
          * 开启新线程用于获取头像
@@ -99,42 +120,92 @@ public class StuFileActivity extends AppCompatActivity {
         }.start();
     }
 
-    public void ChangeInfo(final String str) {
+    /**
+     * 根据tag的不同来判断是修改QQ还是修改TEL
+     * @param tag
+     */
+    public void ChangeInfo(final int tag) {
 
-        final String QQ = "QQ";
         LayoutInflater factory = LayoutInflater.from(this);
         View view = factory.inflate(R.layout.dialog_change, null);
         final EditText editText = (EditText) view.findViewById(R.id.change_info);
         AlertDialog.Builder builder = new AlertDialog.Builder(StuFileActivity.this);
-        builder.setTitle("更改" + str);
+        builder.setTitle("修改信息");
         builder.setView(view);
         builder.setPositiveButton("确定修改", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
                 final String Info = editText.getText().toString().trim();
                 final String QQ = mStuQQ.getText().toString();
                 final String TEL = mStuTEL.getText().toString();
-                if (Info.isEmpty())
-                {
+
+                if (Info.isEmpty()) {
+
                     Toast.makeText(StuFileActivity.this,"修改的信息不能为空",Toast.LENGTH_SHORT).show();
+
                 }else {
-                    if (str.equals(QQ)) {
-                        new Thread() {
-                            @Override
-                            public void run() {
-                                Map<String, String> getInfo = InfoUtils.getLoginInfo(StuFileActivity.this);
-                                String mToken = getInfo.get("StuToken");
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            Map<String, String> getInfo = InfoUtils.getLoginInfo(StuFileActivity.this);
+                            String mToken = getInfo.get("StuToken");
+                            if (tag == 1) {
                                 final String result = NetUtils.ChangeUserInfo(mToken,Info,TEL);
-                                if (result != null) {
-
+                                getResult(result);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mStuQQ.setText(Info);
+                                    }
+                                });
+                            } else if (tag == 2){
+                                /**
+                                 * 这里判断是否为手机号
+                                 */
+                                if (isMobile(Info)) {
+                                    final String result = NetUtils.ChangeUserInfo(mToken,QQ,Info);
+                                    getResult(result);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mStuTEL.setText(Info);
+                                        }
+                                    });
+                                }else {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(StuFileActivity.this,"请输入正确的手机号",Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                                 }
-
                             }
-                        }.start();
-                        mStuQQ.setText("QQ：" + Info);
-                    } else {
-                        mStuTEL.setText("电话：" + Info);
-                    }
+                        }
+
+                        /**
+                         * 用来提示是否修改成功
+                         * @param result
+                         */
+                        public void getResult(String result) {
+                            if (result != null) {
+                                try {
+                                    JSONTokener jsonTokener = new JSONTokener(result);
+                                    JSONObject jsonObject = (JSONObject) jsonTokener.nextValue();
+                                    final String message = jsonObject.getString("message");
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(StuFileActivity.this,""+message,Toast.LENGTH_SHORT).show();
+                                            initInfo();
+                                        }
+                                    });
+                                }catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }.start();
                 }
             }
         });

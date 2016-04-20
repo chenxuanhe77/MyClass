@@ -28,7 +28,6 @@
 
                 <EditText
                     android:id="@+id/user_name"
-                    style="?android:attr/textViewStyle"
                     android:background="@null"
                     android:textSize="18sp"
                     android:maxLength="10"
@@ -50,7 +49,6 @@
 
                 <EditText
                     android:id="@+id/password"
-                    style="?android:attr/textViewStyle"
                     android:drawablePadding="7dp"
                     android:background="@null"
                     android:textSize="18sp"
