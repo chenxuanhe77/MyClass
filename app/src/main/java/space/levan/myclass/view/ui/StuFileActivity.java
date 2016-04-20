@@ -156,7 +156,7 @@ public class StuFileActivity extends AppCompatActivity {
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        mStuQQ.setText(Info);
+                                        Toast.makeText(StuFileActivity.this,"修改成功，再次打开APP即可看见修改内容",Toast.LENGTH_SHORT).show();
                                     }
                                 });
                             } else if (tag == 2){
@@ -169,7 +169,7 @@ public class StuFileActivity extends AppCompatActivity {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            mStuTEL.setText(Info);
+                                            Toast.makeText(StuFileActivity.this,"修改成功，再次打开APP即可看见修改内容",Toast.LENGTH_SHORT).show();
                                         }
                                     });
                                 }else {

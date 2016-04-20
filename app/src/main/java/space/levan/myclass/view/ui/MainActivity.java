@@ -121,7 +121,6 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * 通过token发起网络请求获取个人详细信息
-     *
      * @param mToken
      */
     public void getStuInfo(final String mToken) {
