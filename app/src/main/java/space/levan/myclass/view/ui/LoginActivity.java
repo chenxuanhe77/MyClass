@@ -1,9 +1,14 @@
 package space.levan.myclass.view.ui;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,19 +36,34 @@ public class LoginActivity extends AppCompatActivity {
         Login(view);
     }
 
-    private AutoCompleteTextView mUserName;
+    private EditText mUserName;
     private EditText mPassWord;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //设置全屏
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-        setTitle("登录");
+        //setTitle("登录");
 
-        mUserName = (AutoCompleteTextView) findViewById(R.id.user_name);
+        mUserName = (EditText) findViewById(R.id.user_name);
         mPassWord = (EditText) findViewById(R.id.password);
+
+        Drawable drawable = getResources().getDrawable(R.drawable.user_32px);
+        drawable.setBounds(0,0,50,50);
+        mUserName.setCompoundDrawables(drawable,null,null,null);
+
+        Drawable drawable1 = getResources().getDrawable(R.drawable.unlocked_32px);
+        drawable1.setBounds(0,0,50,50);
+        mPassWord.setCompoundDrawables(drawable1,null,null,null);
+
 
     }
 

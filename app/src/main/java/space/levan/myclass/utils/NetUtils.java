@@ -1,8 +1,6 @@
 package space.levan.myclass.utils;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Log;
+import android.widget.EditText;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -17,7 +15,7 @@ import space.levan.myclass.tool.StreamTools;
 public class NetUtils {
 
     final static String BaseURL = "http://wifi.13550101.com/app/";
-    final static String testURL = "http://wifi.13550101.com/assets/i/userhead.png";
+
     /**
      * 封装网络链接以便重复调用
      * 其他函数调用记得return NetUtils.NetConn(URL);
@@ -52,6 +50,7 @@ public class NetUtils {
      * @throws Exception
      */
     public static byte[] getUserAvatar(String URL) throws Exception{
+
         URL url = new URL(URL);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setConnectTimeout(5000);
@@ -115,6 +114,28 @@ public class NetUtils {
         try {
             String URL = BaseURL + "base_info?token=" +
                     URLEncoder.encode(mToken,"UTF-8");
+
+            return NetUtils.NetConn(URL);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 通过token来修改个人信息
+     * @param mToken
+     * @param mStuQQ
+     * @param mStuTEL
+     * @return
+     */
+    public static String ChangeUserInfo(String mToken,String mStuQQ,String mStuTEL) {
+
+        try {
+            String URL = BaseURL + "update_info?token=" +
+                    URLEncoder.encode(mToken,"UTF-8") +
+                    "&QQ=" + URLEncoder.encode(mStuQQ,"UTF-8") +
+                    "&tel=" + URLEncoder.encode(mStuTEL,"UTF-8");
 
             return NetUtils.NetConn(URL);
         }catch (Exception e) {

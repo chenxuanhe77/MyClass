@@ -8,64 +8,71 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="#2F3C51"
+    android:fitsSystemWindows="true"
     tools:context="space.levan.myclass.view.ui.LoginActivity">
 
-        <ScrollView
-            android:id="@+id/login_form"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_marginTop="50dp">
 
-                <LinearLayout
-                    android:id="@+id/email_login_form"
+                <EditText
+                    android:id="@+id/user_name"
+                    style="?android:attr/textViewStyle"
+                    android:background="@null"
+                    android:textSize="18sp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:textColor="#c2c7cc"
+                    android:drawablePadding="8dp"
+                    android:paddingBottom="5dp"
+                    android:hint="@string/input_username"
+                    android:textColorHint="#c2c7cc"
+                    android:inputType="number"
+                    android:maxLines="1"
+                    android:singleLine="true" />
 
-                        <android.support.design.widget.TextInputLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dip"
+                    android:background="@android:color/darker_gray" />
 
-                                <AutoCompleteTextView
-                                    android:id="@+id/user_name"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:hint="@string/input_username"
-                                    android:inputType="number"
-                                    android:maxLines="1"
-                                    android:singleLine="true" />
+                <EditText
+                    android:id="@+id/password"
+                    style="?android:attr/textViewStyle"
+                    android:drawablePadding="8dp"
+                    android:background="@null"
+                    android:textSize="18sp"
+                    android:layout_marginTop="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#c2c7cc"
+                    android:paddingBottom="5dp"
+                    android:hint="@string/input_password"
+                    android:textColorHint="#c2c7cc"
+                    android:inputType="numberPassword"
+                    android:maxLines="1"
+                    android:singleLine="true" />
 
-                        </android.support.design.widget.TextInputLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dip"
+                    android:background="@android:color/darker_gray" />
 
-                        <android.support.design.widget.TextInputLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                <Button
+                    android:id="@+id/sign_in_button"
+                    style="?android:textAppearanceSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/sign_in"
+                    android:textColor="#FFFFFF"
+                    android:background="@drawable/btn_sharp"
+                    android:textStyle="bold" />
 
-                                <EditText
-                                    android:id="@+id/password"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:hint="@string/input_password"
-                                    android:imeActionLabel="sign in"
-                                    android:imeOptions="actionUnspecified"
-                                    android:inputType="numberPassword"
-                                    android:maxLines="1"
-                                    android:singleLine="true" />
-
-                        </android.support.design.widget.TextInputLayout>
-
-                        <Button
-                            android:id="@+id/sign_in_button"
-                            style="?android:textAppearanceSmall"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
-                            android:text="@string/sign_in"
-                            android:textColor="#FFFFFF"
-                            android:background="#1C86EE"
-                            android:textStyle="bold" />
-
-                </LinearLayout>
-
-        </ScrollView>
+        </LinearLayout>
 
 </LinearLayout>
