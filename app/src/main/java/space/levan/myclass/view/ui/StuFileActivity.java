@@ -118,8 +118,14 @@ public class StuFileActivity extends AppCompatActivity {
                             mStuAvatar.setImageBitmap(bitmap);
                         }
                     });
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     e.printStackTrace();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(StuFileActivity.this,"请求头像失败，请重新打开App",Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             }
         }.start();
@@ -169,7 +175,18 @@ public class StuFileActivity extends AppCompatActivity {
                                     }
                                 });
                                 final String result = NetUtils.changeUserInfo(mToken,Info,TEL);
-                                getResult(result,tag,Info);
+                                if (result != null) {
+                                    getResult(result,tag,Info);
+                                }else {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mProDialog.dismiss();
+                                            Toast.makeText(StuFileActivity.this,"请求失败",Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
+
                             } else if (tag == 2){
                                 /**
                                  * 这里判断是否为手机号
@@ -182,7 +199,17 @@ public class StuFileActivity extends AppCompatActivity {
                                         }
                                     });
                                     final String result = NetUtils.changeUserInfo(mToken,QQ,Info);
-                                    getResult(result,tag,Info);
+                                    if (result != null) {
+                                        getResult(result,tag,Info);
+                                    }else {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                mProDialog.dismiss();
+                                                Toast.makeText(StuFileActivity.this,"请求失败",Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    }
                                 }else {
                                     runOnUiThread(new Runnable() {
                                         @Override
