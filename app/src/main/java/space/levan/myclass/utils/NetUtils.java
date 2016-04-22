@@ -1,9 +1,5 @@
 package space.levan.myclass.utils;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Log;
-
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -17,14 +13,13 @@ import space.levan.myclass.tool.StreamTools;
 public class NetUtils {
 
     final static String BaseURL = "http://wifi.13550101.com/app/";
-    final static String testURL = "http://wifi.13550101.com/assets/i/userhead.png";
+
     /**
      * 封装网络链接以便重复调用
      * 其他函数调用记得return NetUtils.NetConn(URL);
      * @param URL
      * @return
      */
-
     public static String NetConn (String URL) {
 
         try{
@@ -52,16 +47,22 @@ public class NetUtils {
      * @throws Exception
      */
     public static byte[] getUserAvatar(String URL) throws Exception{
-        URL url = new URL(URL);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setConnectTimeout(5000);
-        conn.setRequestMethod("GET");
-        if(conn.getResponseCode() == 200){
-            InputStream inStream = conn.getInputStream();
-            return StreamTools.readImageInputStream(inStream);
-        } else {
-            return null;
+
+        try {
+            URL url = new URL(URL);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout(5000);
+            conn.setRequestMethod("GET");
+            if(conn.getResponseCode() == 200){
+                InputStream inStream = conn.getInputStream();
+                return StreamTools.readImageInputStream(inStream);
+            } else {
+                return null;
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
         }
+        return null;
     }
 
     /**
@@ -114,6 +115,46 @@ public class NetUtils {
 
         try {
             String URL = BaseURL + "base_info?token=" +
+                    URLEncoder.encode(mToken,"UTF-8");
+
+            return NetUtils.NetConn(URL);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 通过token来修改个人信息
+     * @param mToken
+     * @param mStuQQ
+     * @param mStuTEL
+     * @return
+     */
+    public static String changeUserInfo(String mToken,String mStuQQ,String mStuTEL) {
+
+        try {
+            String URL = BaseURL + "update_info?token=" +
+                    URLEncoder.encode(mToken,"UTF-8") +
+                    "&QQ=" + URLEncoder.encode(mStuQQ,"UTF-8") +
+                    "&tel=" + URLEncoder.encode(mStuTEL,"UTF-8");
+
+            return NetUtils.NetConn(URL);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 通过token获取校园卡信息
+     * @param mToken
+     * @return
+     */
+    public static String getCampusCardInfo(String mToken) {
+
+        try {
+            String URL = BaseURL + "base_yikatong?token=" +
                     URLEncoder.encode(mToken,"UTF-8");
 
             return NetUtils.NetConn(URL);

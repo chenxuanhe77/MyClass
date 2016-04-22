@@ -1,12 +1,18 @@
 package space.levan.myclass.view.ui;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.AutoCompleteTextView;
+import android.view.KeyEvent;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONObject;
@@ -27,23 +33,56 @@ public class LoginActivity extends AppCompatActivity {
     @Bind(R.id.sign_in_button)
     Button mButton;
     @OnClick(R.id.sign_in_button)
-    public void onClick(View view) {
-        Login(view);
+    public void onClick() {
+        Login();
     }
 
-    private AutoCompleteTextView mUserName;
+    private EditText mUserName;
     private EditText mPassWord;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //设置全屏
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-        setTitle("登录");
+        //setTitle("登录");
 
-        mUserName = (AutoCompleteTextView) findViewById(R.id.user_name);
+        mUserName = (EditText) findViewById(R.id.user_name);
         mPassWord = (EditText) findViewById(R.id.password);
+
+        /**
+         * 响应输入法前往按钮
+         */
+        mPassWord.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_GO
+                        || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                    Login();
+                    InputMethodManager imm =(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(mPassWord.getWindowToken(), 0);
+
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        Drawable drawable = getResources().getDrawable(R.drawable.user_32px);
+        drawable.setBounds(0,0,50,50);
+        mUserName.setCompoundDrawables(drawable,null,null,null);
+
+        Drawable drawable1 = getResources().getDrawable(R.drawable.unlocked_32px);
+        drawable1.setBounds(0,0,55,55);
+        mPassWord.setCompoundDrawables(drawable1,null,null,null);
+
 
     }
 
@@ -59,10 +98,9 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      * 开启新线程用于登录
-     * @param view
      */
 
-    public void Login(View view) {
+    public void Login() {
         mButton.setClickable(false);
         mButton.setText("Loading...");
         final String username = mUserName.getText().toString().trim();
@@ -124,5 +162,27 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         }.start();
+    }
+
+    /**
+     * 实现再按一次退出提醒
+     */
+    private long exitTime = 0;
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK
+                && event.getAction() == KeyEvent.ACTION_DOWN) {
+
+            if ((System.currentTimeMillis() - exitTime) > 3000) {
+                Toast.makeText(LoginActivity.this,R.string.home_exit,Toast.LENGTH_SHORT).show();
+                exitTime = System.currentTimeMillis();
+            } else {
+                finish();
+            }
+            return true;
+        }
+
+        return super.onKeyDown(keyCode, event);
     }
 }

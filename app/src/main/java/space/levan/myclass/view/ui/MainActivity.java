@@ -20,7 +20,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -122,7 +121,6 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * 通过token发起网络请求获取个人详细信息
-     *
      * @param mToken
      */
     public void getStuInfo(final String mToken) {
@@ -151,7 +149,7 @@ public class MainActivity extends AppCompatActivity
                         try {
                             JSONTokener jsonTokener = new JSONTokener(result);
                             JSONObject jsonObject = (JSONObject) jsonTokener.nextValue();
-                            final String message = jsonObject.getString("message");
+
                             if (jsonObject.getInt("error") == 0) {
                                 JSONObject object = new JSONObject(result).getJSONObject("data");
                                 String StuID = object.getString("xuehao");
@@ -185,7 +183,12 @@ public class MainActivity extends AppCompatActivity
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Toast.makeText(MainActivity.this,""+message,Toast.LENGTH_SHORT).show();
+                                        final Intent intent = getPackageManager().
+                                                getLaunchIntentForPackage(getPackageName());
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(intent);
+                                        Toast.makeText(MainActivity.this,
+                                                "数据异常，请重新登录帐号",Toast.LENGTH_SHORT).show();
                                     }
                                 });
                             }
@@ -257,8 +260,8 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_stuFile) {
             initIntent(StuFileActivity.class);
-        } else if (id == R.id.nav_gallery) {
-
+        } else if (id == R.id.nav_stuCard) {
+            initIntent(CampusCardActivity.class);
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
