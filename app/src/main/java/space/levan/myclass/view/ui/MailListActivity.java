@@ -72,6 +72,12 @@ public class MailListActivity extends AppCompatActivity {
 
     /**
      * 下面开启新线程获取通讯录
+     * 通过从服务器返回数据的error字段来判断
+     * 如果error == 0 则服务器返回正常
+     * 对返回数据进行解析以及适配更新UI
+     * 如果error == 2 则本地token异常
+     * 删除UserData里的所有信息
+     * 并返回登录界面提示重新登录来获取新的token
      */
     public void FillData() {
 
@@ -166,7 +172,6 @@ public class MailListActivity extends AppCompatActivity {
      * @param mStuName
      * @param mStuTEL
      */
-
     public void Call(String mStuName,String mStuTEL) {
 
         final String StuTEL = mStuTEL;
@@ -191,7 +196,6 @@ public class MailListActivity extends AppCompatActivity {
 
     /**
      * 用于界面返回按钮
-     *
      * @param item
      * @return
      */

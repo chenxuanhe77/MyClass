@@ -126,6 +126,8 @@ public class NetUtils {
 
     /**
      * 通过token来修改个人信息
+     * 但传进来的参数只会有一个是修改过的
+     * 利用没修改的那一项来与修改过的拼接新的URL
      * @param mToken
      * @param mStuQQ
      * @param mStuTEL

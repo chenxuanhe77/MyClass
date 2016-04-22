@@ -58,12 +58,14 @@ public class CampusCardActivity extends AppCompatActivity {
 
         Map<String,String> getToken = InfoUtils.getLoginInfo(CampusCardActivity.this);
         getInfo(getToken.get("StuToken"));
-
     }
 
     /**
      * 通过token请求服务器拉取消费记录等详细信息
-     * 但此处只显示时间与消费金额
+     * 然后对服务器返回的error字段进行判断
+     * error == 0 则属于正常返回，对返回的数据进行解析与适配
+     * error ==2 则删除UserData里的所有数据
+     * 重启程序并提示重新登录
      * @param mToken
      */
     public void getInfo(final String mToken) {
@@ -151,7 +153,7 @@ public class CampusCardActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             mProDialog.dismiss();
-                            Toast.makeText(CampusCardActivity.this,"获取失败",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CampusCardActivity.this,"请求失败",Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -161,7 +163,6 @@ public class CampusCardActivity extends AppCompatActivity {
 
     /**
      * 用于界面返回按钮
-     *
      * @param item
      * @return
      */

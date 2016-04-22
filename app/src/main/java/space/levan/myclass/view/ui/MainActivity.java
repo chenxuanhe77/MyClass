@@ -71,6 +71,13 @@ public class MainActivity extends AppCompatActivity
 
         mNavigationView.setNavigationItemSelectedListener(this);
 
+
+        /**
+         * 用来判断本地是否有token
+         * 如果有，则利用token发起网络请求
+         * 得到个人信息，用来填充侧边栏
+         * 以及对“个人信息”页面的缓存
+         */
         Map<String, String> loginInfo = InfoUtils.getLoginInfo(MainActivity.this);
         if (loginInfo != null) {
             if (loginInfo.get("StuToken") != null) {
@@ -98,6 +105,8 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * 注销登录
+     * 调用InfoUtils的deleteUserInfo方法
+     * 删除UserData里的所有信息
      */
     public void SignOut() {
 
@@ -121,18 +130,28 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * 通过token发起网络请求获取个人详细信息
+     * 根据对服务器返回数据error字段的判断来进行不同操作
+     * 如果error == 0 则调用InfoUtils的saveUserInfo来保存信息
+     * 如果保存成功，则通过保存的信息来请求头像
+     * 然后再填充侧边栏更新UI
+     * 如果服务器返回的error == 2则调用
+     * InfoUtils里的deleteUserInfo方法删除所有本地信息
+     * 然后重启程序，回到登录界面
      * @param mToken
      */
     public void getStuInfo(final String mToken) {
 
+        //获取侧边栏控件
         View view = mNavigationView.inflateHeaderView(R.layout.nav_header_main);
         final CircleImageView mStuAvatar = (CircleImageView)view.findViewById(R.id.nav_avatar);
         final TextView mStuName = (TextView)view.findViewById(R.id.nav_name);
         final TextView mStuID = (TextView)view.findViewById(R.id.nav_id);
 
+        //判断是否联网
         ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo == null||!networkInfo.isAvailable()) {
+            //如果没联网，则从本地的UserInfo里读取数据来填充侧边栏
             Map<String, String> userInfo = InfoUtils.getUserInfo(MainActivity.this);
             if(userInfo != null) {
                 mStuID.setText(userInfo.get("StuID"));
@@ -142,6 +161,7 @@ public class MainActivity extends AppCompatActivity
                 mStuName.setText("");
             }
         } else {
+            //联网则开启新线程拉取服务器最新的用户数据
             new Thread() {
                 public void run() {
                     final String result = NetUtils.getUserInfo(mToken);
@@ -180,6 +200,7 @@ public class MainActivity extends AppCompatActivity
                                     });
                                 }
                             } else if(jsonObject.getInt("error") == 2) {
+                                InfoUtils.deleteUserInfo(MainActivity.this);
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
@@ -221,7 +242,6 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * 以下两个函数用于创建右上角按钮以及点击事件
-     *
      * @param menu
      * @return
      */
