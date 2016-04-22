@@ -52,7 +52,7 @@
                     android:drawablePadding="7dp"
                     android:background="@null"
                     android:textSize="18sp"
-                    android:maxLength="6"
+                    android:maxLength="12"
                     android:layout_marginTop="15dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -153,7 +153,7 @@ public class CampusCardActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             mProDialog.dismiss();
-                            Toast.makeText(CampusCardActivity.this,"获取失败",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CampusCardActivity.this,"请求失败",Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
