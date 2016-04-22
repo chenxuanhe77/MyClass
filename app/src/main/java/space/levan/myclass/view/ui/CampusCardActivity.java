@@ -8,19 +8,14 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
-import com.hrules.charter.CharterLine;
-import com.hrules.charter.CharterXLabels;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.Bind;
 import space.levan.myclass.R;
 import space.levan.myclass.utils.InfoUtils;
 import space.levan.myclass.utils.NetUtils;
