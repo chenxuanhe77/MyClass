@@ -25,11 +25,12 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".view.ui.StuFileActivity" />
-        <activity android:name=".view.ui.LoginActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".view.ui.StuFileActivity"/>
         <activity android:name=".view.ui.MailListActivity"/>
-        <activity android:name=".view.ui.AboutActivity" />
+        <activity android:name=".view.ui.CampusCardActivity"/>
+        <activity android:name=".view.ui.LoginActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".view.ui.AboutActivity"/>
 
     </application>
 

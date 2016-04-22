@@ -81,14 +81,14 @@ public class InfoUtils {
         return true;
     }
 
-    public static boolean UpdateUserInfo(Context context,String mStuQQ,String mStuTEL) {
+    /*public static boolean UpdateUserInfo(Context context,String mStuQQ,String mStuTEL) {
         SharedPreferences sp = context.getSharedPreferences("UserData",Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = sp.edit();
         edit.putString("StuQQ",mStuQQ);
         edit.putString("StuTEL",mStuTEL);
         edit.commit();
         return true;
-    }
+    }*/
 
     /**
      * 用于读取个人档案

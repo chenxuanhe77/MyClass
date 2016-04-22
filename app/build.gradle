@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "space.levan.myclass"
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -27,4 +27,5 @@ dependencies {
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.android.support:cardview-v7:23.3.0'
     compile 'de.hdodenhof:circleimageview:2.0.0'
+    compile 'com.hrules:charter:1.5.1'
 }

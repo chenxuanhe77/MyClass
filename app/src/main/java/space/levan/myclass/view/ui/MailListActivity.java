@@ -84,43 +84,43 @@ public class MailListActivity extends AppCompatActivity {
 
                 if(result != null) {
 
+                    try {
+                        JSONObject jsonObject = new JSONObject(result);
+                        JSONArray jsonArray = jsonObject.getJSONArray("data");
+                        if(jsonObject.getInt("error") == 0){
+                            MailInfos = new ArrayList<>();
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject jo = (JSONObject) jsonArray.get(i);
+                                String StuID = jo.getString("xuehao");
+                                String StuName = jo.getString("name");
+                                String StuQQ = jo.getString("QQ");
+                                String StuTEL = jo.getString("tel");
+
+                                MailInfo = new HashMap<>();
+                                MailInfo.put("StuID","学号："+StuID);
+                                MailInfo.put("StuName","姓名："+StuName);
+                                MailInfo.put("StuQQ","QQ："+StuQQ);
+                                MailInfo.put("StuTEL","电话："+StuTEL);
+
+                                MailInfos.add(MailInfo);
+                            }
+
+                        } else if(jsonObject.getInt("error") == 1 || jsonObject.getInt("error") == 2) {
+                            Toast.makeText(MailListActivity.this, "" + jsonObject.get("message"),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            try {
-                                JSONObject jsonObject = new JSONObject(result);
-                                JSONArray jsonArray = jsonObject.getJSONArray("data");
-                                if(jsonObject.getInt("error") == 0){
-                                    MailInfos = new ArrayList<>();
-                                    for (int i = 0; i < jsonArray.length(); i++) {
-                                        JSONObject jo = (JSONObject) jsonArray.get(i);
-                                        String StuID = jo.getString("xuehao");
-                                        String StuName = jo.getString("name");
-                                        String StuQQ = jo.getString("QQ");
-                                        String StuTEL = jo.getString("tel");
-
-                                        MailInfo = new HashMap<>();
-                                        MailInfo.put("StuID","学号："+StuID);
-                                        MailInfo.put("StuName","姓名："+StuName);
-                                        MailInfo.put("StuQQ","QQ："+StuQQ);
-                                        MailInfo.put("StuTEL","电话："+StuTEL);
-
-                                        MailInfos.add(MailInfo);
-                                    }
-
-                                    SimpleAdapter adapter = new SimpleAdapter(MailListActivity.this,
-                                            MailInfos,R.layout.item_mail,
-                                            new String[]{"StuID","StuName","StuQQ","StuTEL"},
-                                            new int[]{R.id.StuID,R.id.StuName,R.id.StuQQ,R.id.StuTEL});
-                                    mListView.setAdapter(adapter);
-                                } else if(jsonObject.getInt("error") == 1 || jsonObject.getInt("error") == 2) {
-                                    Toast.makeText(MailListActivity.this, "" + jsonObject.get("message"),
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                            }catch (Exception e) {
-                                e.printStackTrace();
-                            }
-
+                            SimpleAdapter adapter = new SimpleAdapter(MailListActivity.this,
+                                    MailInfos,R.layout.item_mail,
+                                    new String[]{"StuID","StuName","StuQQ","StuTEL"},
+                                    new int[]{R.id.StuID,R.id.StuName,R.id.StuQQ,R.id.StuTEL});
+                            mListView.setAdapter(adapter);
                         }
                     });
                 }else {

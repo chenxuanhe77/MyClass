@@ -151,7 +151,7 @@ public class StuFileActivity extends AppCompatActivity {
                             Map<String, String> getInfo = InfoUtils.getLoginInfo(StuFileActivity.this);
                             String mToken = getInfo.get("StuToken");
                             if (tag == 1) {
-                                final String result = NetUtils.ChangeUserInfo(mToken,Info,TEL);
+                                final String result = NetUtils.changeUserInfo(mToken,Info,TEL);
                                 getResult(result);
                                 runOnUiThread(new Runnable() {
                                     @Override
@@ -164,7 +164,7 @@ public class StuFileActivity extends AppCompatActivity {
                                  * 这里判断是否为手机号
                                  */
                                 if (isMobile(Info)) {
-                                    final String result = NetUtils.ChangeUserInfo(mToken,QQ,Info);
+                                    final String result = NetUtils.changeUserInfo(mToken,QQ,Info);
                                     getResult(result);
                                     runOnUiThread(new Runnable() {
                                         @Override

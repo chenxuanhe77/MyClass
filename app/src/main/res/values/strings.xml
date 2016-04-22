@@ -12,6 +12,7 @@
     <string name="home_exit">再按一次退出</string>
 
     <string name="stu_file">个人档案</string>
+    <string name="campus_card">校园卡记录</string>
     <string name="mail_list">通讯录</string>
     <string name="sign_out">退出登录</string>
     <string name="action_settings">Settings</string>

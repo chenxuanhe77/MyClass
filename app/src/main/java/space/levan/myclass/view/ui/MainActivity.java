@@ -255,8 +255,8 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_stuFile) {
             initIntent(StuFileActivity.class);
-        } else if (id == R.id.nav_gallery) {
-
+        } else if (id == R.id.nav_stuCard) {
+            initIntent(CampusCardActivity.class);
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
