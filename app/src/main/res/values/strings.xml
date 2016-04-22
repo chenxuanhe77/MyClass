@@ -4,6 +4,8 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <string name="loading">加载中...</string>
+
     <string name="input_username">请输入用户名</string>
     <string name="input_password">密码</string>
     <string name="sign_in">登录</string>

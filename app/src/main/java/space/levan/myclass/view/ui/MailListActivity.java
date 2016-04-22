@@ -1,5 +1,6 @@
 package space.levan.myclass.view.ui;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -34,6 +35,8 @@ public class MailListActivity extends AppCompatActivity {
     private List<HashMap<String, Object>> MailInfos;
     private HashMap<String, Object> MailInfo;
     private ListView mListView;
+
+    private ProgressDialog mProDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +76,8 @@ public class MailListActivity extends AppCompatActivity {
      * 下面开启新线程获取通讯录
      */
     public void FillData() {
+
+        mProDialog = ProgressDialog.show(MailListActivity.this,"","加载中，请稍候...");
 
         new Thread() {
 
@@ -121,12 +126,14 @@ public class MailListActivity extends AppCompatActivity {
                                     new String[]{"StuID","StuName","StuQQ","StuTEL"},
                                     new int[]{R.id.StuID,R.id.StuName,R.id.StuQQ,R.id.StuTEL});
                             mListView.setAdapter(adapter);
+                            mProDialog.dismiss();
                         }
                     });
                 }else {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            mProDialog.dismiss();
                             Toast.makeText(MailListActivity.this,"请求失败",Toast.LENGTH_SHORT).show();
                         }
                     });

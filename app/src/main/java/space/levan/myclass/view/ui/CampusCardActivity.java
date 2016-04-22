@@ -1,8 +1,10 @@
 package space.levan.myclass.view.ui;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -29,6 +31,8 @@ public class CampusCardActivity extends AppCompatActivity {
     private HashMap<String, Object> CardInfo;
     private ListView mListView;
 
+    private ProgressDialog mProDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +55,7 @@ public class CampusCardActivity extends AppCompatActivity {
      * @param mToken
      */
     public void getInfo(final String mToken) {
+        mProDialog = ProgressDialog.show(CampusCardActivity.this,"","加载中，请稍候...");
         new Thread() {
             @Override
             public void run() {
@@ -74,6 +79,7 @@ public class CampusCardActivity extends AppCompatActivity {
                                 CardInfos.add(CardInfo);
                             }
                         }else if(jsonObject.getInt("error") == 1 || jsonObject.getInt("error") == 2) {
+                            mProDialog.dismiss();
                             Toast.makeText(CampusCardActivity.this, "" + jsonObject.get("message"),
                                     Toast.LENGTH_SHORT).show();
                         }
@@ -89,6 +95,7 @@ public class CampusCardActivity extends AppCompatActivity {
                                     new String[]{"Time","Trade"},
                                     new int[]{R.id.card_time,R.id.card_trade});
                             mListView.setAdapter(adapter);
+                            mProDialog.dismiss();
                         }
                     });
 
@@ -96,6 +103,7 @@ public class CampusCardActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            mProDialog.dismiss();
                             Toast.makeText(CampusCardActivity.this,"获取失败",Toast.LENGTH_SHORT).show();
                         }
                     });

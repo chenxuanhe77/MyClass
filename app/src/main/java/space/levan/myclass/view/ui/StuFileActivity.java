@@ -1,5 +1,6 @@
 package space.levan.myclass.view.ui;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -46,6 +47,7 @@ public class StuFileActivity extends AppCompatActivity {
 
     private static final int TAG_QQ = 1;
     private static final int TAG_TEL = 2;
+    private ProgressDialog mProDialog;
     /**
      * 正则表达式：验证手机号
      */
@@ -53,7 +55,6 @@ public class StuFileActivity extends AppCompatActivity {
 
     /**
      * 校验手机号
-     *
      * @param mobile
      * @return 校验通过返回true，否则返回false
      */
@@ -92,6 +93,8 @@ public class StuFileActivity extends AppCompatActivity {
      */
     public void initInfo() {
 
+        mProDialog = ProgressDialog.show(StuFileActivity.this,"","加载中，请稍候...");
+
         final Map<String, String> userInfo = InfoUtils.getUserInfo(StuFileActivity.this);
         mStuId.setText(userInfo.get("StuID"));
         mStuName.setText(userInfo.get("StuName"));
@@ -111,6 +114,7 @@ public class StuFileActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             mStuAvatar.setImageBitmap(bitmap);
+                            mProDialog.dismiss();
                         }
                     });
                 } catch (Exception e) {
@@ -153,12 +157,6 @@ public class StuFileActivity extends AppCompatActivity {
                             if (tag == 1) {
                                 final String result = NetUtils.changeUserInfo(mToken,Info,TEL);
                                 getResult(result);
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(StuFileActivity.this,"修改成功，再次打开APP即可看见修改内容",Toast.LENGTH_SHORT).show();
-                                    }
-                                });
                             } else if (tag == 2){
                                 /**
                                  * 这里判断是否为手机号
@@ -166,12 +164,6 @@ public class StuFileActivity extends AppCompatActivity {
                                 if (isMobile(Info)) {
                                     final String result = NetUtils.changeUserInfo(mToken,QQ,Info);
                                     getResult(result);
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            Toast.makeText(StuFileActivity.this,"修改成功，再次打开APP即可看见修改内容",Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
                                 }else {
                                     runOnUiThread(new Runnable() {
                                         @Override
@@ -196,7 +188,7 @@ public class StuFileActivity extends AppCompatActivity {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            Toast.makeText(StuFileActivity.this,""+message,Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(StuFileActivity.this,message+"再次打开APP即可显示修改后的信息",Toast.LENGTH_SHORT).show();
                                             initInfo();
                                         }
                                     });
