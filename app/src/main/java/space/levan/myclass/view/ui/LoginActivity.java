@@ -98,8 +98,14 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      * 开启新线程用于登录
+     * 并对服务器返回数据进行判断
+     * 以及对存储登录信息进行判断
+     * error == 0 时服务器判定登录成功
+     * 则进行对返回数据的存储以便后面调用
+     * 如果存储失败则需要重新登录
+     * error == 1 时服务器判定登录失败
+     * 需要重新登录
      */
-
     public void Login() {
         mButton.setClickable(false);
         mButton.setText("Loading...");
@@ -130,7 +136,7 @@ public class LoginActivity extends AppCompatActivity {
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Toast.makeText(LoginActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(LoginActivity.this, "保存登录信息失败", Toast.LENGTH_SHORT).show();
                                         mButton.setClickable(true);
                                         mButton.setText("登录");
                                     }

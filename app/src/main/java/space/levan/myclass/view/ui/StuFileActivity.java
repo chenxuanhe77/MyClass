@@ -62,6 +62,10 @@ public class StuFileActivity extends AppCompatActivity {
         return Pattern.matches(REGEX_MOBILE, mobile);
     }
 
+    /**
+     * 传递TAG来判断用户点的是修改QQ还是修改TEL
+     * @param view
+     */
     @OnClick({R.id.change_QQ, R.id.change_TEL})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -92,8 +96,6 @@ public class StuFileActivity extends AppCompatActivity {
      * 从网络获取头像
      */
     public void initInfo() {
-
-        //mProDialog = ProgressDialog.show(StuFileActivity.this,"","加载中，请稍候...");
 
         final Map<String, String> userInfo = InfoUtils.getUserInfo(StuFileActivity.this);
         mStuId.setText(userInfo.get("StuID"));
@@ -158,6 +160,7 @@ public class StuFileActivity extends AppCompatActivity {
                         public void run() {
                             Map<String, String> getInfo = InfoUtils.getLoginInfo(StuFileActivity.this);
                             String mToken = getInfo.get("StuToken");
+                            //获取token用来发起请求修改数据
                             if (tag == 1) {
                                 runOnUiThread(new Runnable() {
                                     @Override
@@ -193,8 +196,13 @@ public class StuFileActivity extends AppCompatActivity {
                         }
 
                         /**
-                         * 用来提示是否修改成功
+                         * 用来获取修改信息是否成功
+                         * 如果修改成功，则根据tag来直接保存输入的数据
+                         * 如果服务器返回的error == 2则删除本地所有数据
+                         * 重启程序提示重新登录
                          * @param result
+                         * @param tag
+                         * @param str
                          */
                         public void getResult(String result,final int tag, final String str) {
                             if (result != null) {

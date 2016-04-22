@@ -66,7 +66,6 @@ public class InfoUtils {
      * @param mStuAvatar
      * @return
      */
-
     public static boolean saveUserInfo(Context context,String mStuID,
                                        String mStuName,String mStuQQ,
                                        String mStuTEL,String mStuAvatar) {
@@ -81,6 +80,14 @@ public class InfoUtils {
         return true;
     }
 
+    /**
+     * 通过TAG来判断用户是修改了QQ还是TEL
+     * 如果是QQ则同时更新Avatar标签
+     * @param context
+     * @param tag
+     * @param info
+     * @return
+     */
     public static boolean updateUserInfo(Context context,int tag,String info) {
         SharedPreferences sp = context.getSharedPreferences("UserData",Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = sp.edit();
