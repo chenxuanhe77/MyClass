@@ -2,6 +2,7 @@ package space.levan.myclass.view.ui;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -16,7 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -62,13 +62,13 @@ public class StuFileActivity extends AppCompatActivity {
         return Pattern.matches(REGEX_MOBILE, mobile);
     }
 
-    @OnClick({R.id.stu_QQ, R.id.stu_TEL})
+    @OnClick({R.id.change_QQ, R.id.change_TEL})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.stu_QQ:
+            case R.id.change_QQ:
                 ChangeInfo(TAG_QQ);
                 break;
-            case R.id.stu_TEL:
+            case R.id.change_TEL:
                 ChangeInfo(TAG_TEL);
                 break;
         }
@@ -80,7 +80,7 @@ public class StuFileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stu_file);
         ButterKnife.bind(this);
-        setTitle("个人档案");
+        setTitle("个人信息");
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
@@ -93,7 +93,7 @@ public class StuFileActivity extends AppCompatActivity {
      */
     public void initInfo() {
 
-        mProDialog = ProgressDialog.show(StuFileActivity.this,"","加载中，请稍候...");
+        //mProDialog = ProgressDialog.show(StuFileActivity.this,"","加载中，请稍候...");
 
         final Map<String, String> userInfo = InfoUtils.getUserInfo(StuFileActivity.this);
         mStuId.setText(userInfo.get("StuID"));
@@ -114,7 +114,6 @@ public class StuFileActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             mStuAvatar.setImageBitmap(bitmap);
-                            mProDialog.dismiss();
                         }
                     });
                 } catch (Exception e) {
@@ -133,8 +132,13 @@ public class StuFileActivity extends AppCompatActivity {
         LayoutInflater factory = LayoutInflater.from(this);
         View view = factory.inflate(R.layout.dialog_change, null);
         final EditText editText = (EditText) view.findViewById(R.id.change_info);
+
         AlertDialog.Builder builder = new AlertDialog.Builder(StuFileActivity.this);
-        builder.setTitle("修改信息");
+        if(tag == 1){
+            builder.setTitle("修改QQ");
+        }else {
+            builder.setTitle("修改电话");
+        }
         builder.setView(view);
         builder.setPositiveButton("确定修改", new DialogInterface.OnClickListener() {
             @Override
@@ -155,20 +159,33 @@ public class StuFileActivity extends AppCompatActivity {
                             Map<String, String> getInfo = InfoUtils.getLoginInfo(StuFileActivity.this);
                             String mToken = getInfo.get("StuToken");
                             if (tag == 1) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mProDialog = ProgressDialog.show(StuFileActivity.this,"","加载中，请稍候...");
+                                    }
+                                });
                                 final String result = NetUtils.changeUserInfo(mToken,Info,TEL);
-                                getResult(result);
+                                getResult(result,tag,Info);
                             } else if (tag == 2){
                                 /**
                                  * 这里判断是否为手机号
                                  */
                                 if (isMobile(Info)) {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mProDialog = ProgressDialog.show(StuFileActivity.this,"","加载中，请稍候...");
+                                        }
+                                    });
                                     final String result = NetUtils.changeUserInfo(mToken,QQ,Info);
-                                    getResult(result);
+                                    getResult(result,tag,Info);
                                 }else {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            Toast.makeText(StuFileActivity.this,"请输入正确的手机号",Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(StuFileActivity.this,
+                                                    "请输入正确的手机号",Toast.LENGTH_SHORT).show();
                                         }
                                     });
                                 }
@@ -179,19 +196,37 @@ public class StuFileActivity extends AppCompatActivity {
                          * 用来提示是否修改成功
                          * @param result
                          */
-                        public void getResult(String result) {
+                        public void getResult(String result,final int tag, final String str) {
                             if (result != null) {
                                 try {
-                                    JSONTokener jsonTokener = new JSONTokener(result);
-                                    JSONObject jsonObject = (JSONObject) jsonTokener.nextValue();
+                                    JSONObject jsonObject = new JSONObject(result);
                                     final String message = jsonObject.getString("message");
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            Toast.makeText(StuFileActivity.this,message+"再次打开APP即可显示修改后的信息",Toast.LENGTH_SHORT).show();
-                                            initInfo();
-                                        }
-                                    });
+                                    if (jsonObject.getInt("error") == 0) {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Toast.makeText(StuFileActivity.this,message,Toast.LENGTH_SHORT).show();
+                                                InfoUtils.updateUserInfo(StuFileActivity.this,tag,str);
+                                                initInfo();
+                                                mProDialog.dismiss();
+                                            }
+                                        });
+                                    } else if(jsonObject.getInt("error") == 2) {
+                                        InfoUtils.deleteUserInfo(StuFileActivity.this);
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                mProDialog.dismiss();
+                                                final Intent intent = getPackageManager().
+                                                        getLaunchIntentForPackage(getPackageName());
+                                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                startActivity(intent);
+                                                Toast.makeText(StuFileActivity.this,
+                                                        "数据异常，请重新登录帐号",Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    }
+
                                 }catch (Exception e) {
                                     e.printStackTrace();
                                 }

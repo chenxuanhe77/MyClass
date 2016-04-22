@@ -1,13 +1,14 @@
 package space.levan.myclass.view.ui;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -18,6 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import space.levan.myclass.R;
 import space.levan.myclass.utils.InfoUtils;
 import space.levan.myclass.utils.NetUtils;
@@ -26,6 +29,13 @@ import space.levan.myclass.utils.NetUtils;
  * Created by 339 on 2016/4/22.
  */
 public class CampusCardActivity extends AppCompatActivity {
+
+    @Bind(R.id.card_name)
+    TextView mCardName;
+    @Bind(R.id.card_id)
+    TextView mCardID;
+    @Bind(R.id.card_balance)
+    TextView mCardBalance;
 
     private List<HashMap<String, Object>> CardInfos;
     private HashMap<String, Object> CardInfo;
@@ -37,6 +47,8 @@ public class CampusCardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_campus_card);
+
+        ButterKnife.bind(this);
 
         setTitle("校园卡消费记录");
         ActionBar actionBar = getSupportActionBar();
@@ -55,16 +67,32 @@ public class CampusCardActivity extends AppCompatActivity {
      * @param mToken
      */
     public void getInfo(final String mToken) {
+
         mProDialog = ProgressDialog.show(CampusCardActivity.this,"","加载中，请稍候...");
+
         new Thread() {
             @Override
             public void run() {
                 final String result = NetUtils.getCampusCardInfo(mToken);
+
                 if (result != null) {
+
                     try {
                         JSONObject jsonObject = new JSONObject(result);
                         if(jsonObject.getInt("error") == 0) {
                             JSONObject object = jsonObject.getJSONObject("data");
+                            JSONObject info = object.getJSONObject("info");
+                            final String cardName = info.getString("name");
+                            final String cardID = info.getString("cardId");
+                            final String cardBalance = info.getString("balance");
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mCardName.setText(cardName);
+                                    mCardID.setText(cardID);
+                                    mCardBalance.setText(cardBalance);
+                                }
+                            });
                             JSONArray jsonArray = object.getJSONArray("data");
                             CardInfos = new ArrayList<>();
                             for (int i = 0;i < jsonArray.length();i++ ){
@@ -78,26 +106,45 @@ public class CampusCardActivity extends AppCompatActivity {
 
                                 CardInfos.add(CardInfo);
                             }
-                        }else if(jsonObject.getInt("error") == 1 || jsonObject.getInt("error") == 2) {
-                            mProDialog.dismiss();
-                            Toast.makeText(CampusCardActivity.this, "" + jsonObject.get("message"),
-                                    Toast.LENGTH_SHORT).show();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    SimpleAdapter adapter = new SimpleAdapter(CampusCardActivity.this,
+                                            CardInfos,R.layout.item_card,
+                                            new String[]{"Time","Trade"},
+                                            new int[]{R.id.card_time,R.id.card_trade});
+                                    mListView.setAdapter(adapter);
+                                    mProDialog.dismiss();
+                                }
+                            });
+                        } else if(jsonObject.getInt("error") == 1) {
+                            final String message = jsonObject.getString("message");
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mProDialog.dismiss();
+                                    Toast.makeText(CampusCardActivity.this, "" + message,
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        } else if(jsonObject.getInt("error") == 2) {
+                            InfoUtils.deleteUserInfo(CampusCardActivity.this);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mProDialog.dismiss();
+                                    final Intent intent = getPackageManager().
+                                            getLaunchIntentForPackage(getPackageName());
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(intent);
+                                    Toast.makeText(CampusCardActivity.this,
+                                            "数据异常，请重新登录帐号",Toast.LENGTH_SHORT).show();
+                                }
+                            });
                         }
                     }catch (Exception e) {
                         e.printStackTrace();
                     }
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            SimpleAdapter adapter = new SimpleAdapter(CampusCardActivity.this,
-                                    CardInfos,R.layout.item_card,
-                                    new String[]{"Time","Trade"},
-                                    new int[]{R.id.card_time,R.id.card_trade});
-                            mListView.setAdapter(adapter);
-                            mProDialog.dismiss();
-                        }
-                    });
 
                 }else {
                     runOnUiThread(new Runnable() {

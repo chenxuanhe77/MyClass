@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity
                         try {
                             JSONTokener jsonTokener = new JSONTokener(result);
                             JSONObject jsonObject = (JSONObject) jsonTokener.nextValue();
-                            final String message = jsonObject.getString("message");
+
                             if (jsonObject.getInt("error") == 0) {
                                 JSONObject object = new JSONObject(result).getJSONObject("data");
                                 String StuID = object.getString("xuehao");
@@ -183,7 +183,12 @@ public class MainActivity extends AppCompatActivity
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Toast.makeText(MainActivity.this,""+message,Toast.LENGTH_SHORT).show();
+                                        final Intent intent = getPackageManager().
+                                                getLaunchIntentForPackage(getPackageName());
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(intent);
+                                        Toast.makeText(MainActivity.this,
+                                                "数据异常，请重新登录帐号",Toast.LENGTH_SHORT).show();
                                     }
                                 });
                             }

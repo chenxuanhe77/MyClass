@@ -81,14 +81,19 @@ public class InfoUtils {
         return true;
     }
 
-    /*public static boolean UpdateUserInfo(Context context,String mStuQQ,String mStuTEL) {
+    public static boolean updateUserInfo(Context context,int tag,String info) {
         SharedPreferences sp = context.getSharedPreferences("UserData",Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = sp.edit();
-        edit.putString("StuQQ",mStuQQ);
-        edit.putString("StuTEL",mStuTEL);
+        if (tag == 1) {
+            edit.putString("StuQQ",info);
+            edit.putString("StuAvatar",
+                    "http://q.qlogo.cn/headimg_dl?fid=blog&amp;spec=100&amp;dst_uin="+info);
+        } else if (tag == 2) {
+            edit.putString("StuTEL",info);
+        }
         edit.commit();
         return true;
-    }*/
+    }
 
     /**
      * 用于读取个人档案

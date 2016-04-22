@@ -1,5 +1,6 @@
 package space.levan.myclass.view.ui;
 
+import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -43,14 +44,11 @@ public class MailListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mail_list);
 
-        //ButterKnife.bind(this);
-
         setTitle("通讯录");
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         mListView = (ListView) findViewById(R.id.MailInfo_LV);
-
 
         FillData();
 
@@ -91,8 +89,8 @@ public class MailListActivity extends AppCompatActivity {
 
                     try {
                         JSONObject jsonObject = new JSONObject(result);
-                        JSONArray jsonArray = jsonObject.getJSONArray("data");
                         if(jsonObject.getInt("error") == 0){
+                            JSONArray jsonArray = jsonObject.getJSONArray("data");
                             MailInfos = new ArrayList<>();
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject jo = (JSONObject) jsonArray.get(i);
@@ -110,25 +108,46 @@ public class MailListActivity extends AppCompatActivity {
                                 MailInfos.add(MailInfo);
                             }
 
-                        } else if(jsonObject.getInt("error") == 1 || jsonObject.getInt("error") == 2) {
-                            Toast.makeText(MailListActivity.this, "" + jsonObject.get("message"),
-                                    Toast.LENGTH_SHORT).show();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    SimpleAdapter adapter = new SimpleAdapter(MailListActivity.this,
+                                            MailInfos,R.layout.item_mail,
+                                            new String[]{"StuID","StuName","StuQQ","StuTEL"},
+                                            new int[]{R.id.StuID,R.id.StuName,R.id.StuQQ,R.id.StuTEL});
+                                    mListView.setAdapter(adapter);
+                                    mProDialog.dismiss();
+                                }
+                            });
+
+                        } else if(jsonObject.getInt("error") == 1) {
+                            final String message = jsonObject.getString("message");
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(MailListActivity.this, "" + message,
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        } else if(jsonObject.getInt("error") == 2) {
+                            InfoUtils.deleteUserInfo(MailListActivity.this);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mProDialog.dismiss();
+                                    final Intent intent = getPackageManager().
+                                            getLaunchIntentForPackage(getPackageName());
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(intent);
+                                    Toast.makeText(MailListActivity.this,
+                                            "数据异常，请重新登录帐号",Toast.LENGTH_SHORT).show();
+                                }
+                            });
                         }
                     }catch (Exception e) {
                         e.printStackTrace();
                     }
 
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            SimpleAdapter adapter = new SimpleAdapter(MailListActivity.this,
-                                    MailInfos,R.layout.item_mail,
-                                    new String[]{"StuID","StuName","StuQQ","StuTEL"},
-                                    new int[]{R.id.StuID,R.id.StuName,R.id.StuQQ,R.id.StuTEL});
-                            mListView.setAdapter(adapter);
-                            mProDialog.dismiss();
-                        }
-                    });
                 }else {
                     runOnUiThread(new Runnable() {
                         @Override
@@ -151,6 +170,7 @@ public class MailListActivity extends AppCompatActivity {
     public void Call(String mStuName,String mStuTEL) {
 
         final String StuTEL = mStuTEL;
+
         AlertDialog.Builder builder = new AlertDialog.Builder(MailListActivity.this);
         builder.setTitle("提示");
         builder.setMessage("确定拨打" + mStuName +"的电话吗？");
