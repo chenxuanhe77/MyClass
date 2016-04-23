@@ -167,21 +167,18 @@ public class MainActivity extends AppCompatActivity
                     final String result = NetUtils.getUserInfo(mToken);
                     if (result != null) {
                         try {
-                            JSONTokener jsonTokener = new JSONTokener(result);
-                            JSONObject jsonObject = (JSONObject) jsonTokener.nextValue();
-
+                            JSONObject jsonObject = new JSONObject(result);
                             if (jsonObject.getInt("error") == 0) {
-                                JSONObject object = new JSONObject(result).getJSONObject("data");
-                                String StuID = object.getString("xuehao");
-                                String StuName = object.getString("name");
-                                String StuQQ = object.getString("QQ");
-                                String StuTEL = object.getString("tel");
-                                String StuAvatar = object.getString("avatar");
+                                String StuID = jsonObject.getString("xuehao");
+                                String StuName = jsonObject.getString("name");
+                                String StuQQ = jsonObject.getString("QQ");
+                                String StuTEL = jsonObject.getString("tel");
+                                String StuAvatar = jsonObject.getString("avatar");
                                 boolean isSaveSuccess = InfoUtils.saveUserInfo(MainActivity.this, StuID,
                                         StuName,StuQQ,StuTEL,StuAvatar);
-                                byte[] Avatar = NetUtils.getUserAvatar(StuAvatar);
-                                final Bitmap bitmap = BitmapFactory.decodeByteArray(Avatar,0,Avatar.length);
                                 if (isSaveSuccess) {
+                                    byte[] Avatar = NetUtils.getUserAvatar(StuAvatar);
+                                    final Bitmap bitmap = BitmapFactory.decodeByteArray(Avatar,0,Avatar.length);
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
@@ -220,7 +217,7 @@ public class MainActivity extends AppCompatActivity
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(MainActivity.this,"获取信息失败",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this,"请求失败",Toast.LENGTH_SHORT).show();
                             }
                         });
                     }

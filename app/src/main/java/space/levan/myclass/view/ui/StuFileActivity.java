@@ -232,39 +232,42 @@ public class StuFileActivity extends AppCompatActivity {
                          * @param str
                          */
                         public void getResult(String result,final int tag, final String str) {
-                            if (result != null) {
-                                try {
-                                    JSONObject jsonObject = new JSONObject(result);
-                                    final String message = jsonObject.getString("message");
-                                    if (jsonObject.getInt("error") == 0) {
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                Toast.makeText(StuFileActivity.this,message,Toast.LENGTH_SHORT).show();
-                                                InfoUtils.updateUserInfo(StuFileActivity.this,tag,str);
+
+                            try {
+                                JSONObject jsonObject = new JSONObject(result);
+                                final String message = jsonObject.getString("message");
+                                if (jsonObject.getInt("error") == 0) {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(StuFileActivity.this,message,Toast.LENGTH_SHORT).show();
+                                            boolean isSaveSuccess = InfoUtils.updateUserInfo(StuFileActivity.this,tag,str);
+                                            if(isSaveSuccess) {
                                                 initInfo();
                                                 mProDialog.dismiss();
+                                            }else {
+                                                Toast.makeText(StuFileActivity.this,"更新数据保存失败",Toast.LENGTH_SHORT).show();
                                             }
-                                        });
-                                    } else if(jsonObject.getInt("error") == 2) {
-                                        InfoUtils.deleteUserInfo(StuFileActivity.this);
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                mProDialog.dismiss();
-                                                final Intent intent = getPackageManager().
-                                                        getLaunchIntentForPackage(getPackageName());
-                                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                startActivity(intent);
-                                                Toast.makeText(StuFileActivity.this,
-                                                        "数据异常，请重新登录帐号",Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-                                    }
-
-                                }catch (Exception e) {
-                                    e.printStackTrace();
+                                        }
+                                    });
+                                } else if(jsonObject.getInt("error") == 2) {
+                                    InfoUtils.deleteUserInfo(StuFileActivity.this);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mProDialog.dismiss();
+                                            final Intent intent = getPackageManager().
+                                                    getLaunchIntentForPackage(getPackageName());
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            startActivity(intent);
+                                            Toast.makeText(StuFileActivity.this,
+                                                    "数据异常，请重新登录帐号",Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                                 }
+
+                            }catch (Exception e) {
+                                e.printStackTrace();
                             }
                         }
                     }.start();

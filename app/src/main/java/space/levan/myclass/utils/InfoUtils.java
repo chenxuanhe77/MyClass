@@ -46,12 +46,7 @@ public class InfoUtils {
     public static boolean deleteUserInfo(Context context) {
         SharedPreferences sp = context.getSharedPreferences("UserData",Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = sp.edit();
-        edit.remove("StuToken");
-        edit.remove("StuID");
-        edit.remove("StuName");
-        edit.remove("StuQQ");
-        edit.remove("StuTEL");
-        edit.remove("StuAvatar");
+        edit.clear();
         edit.commit();
         return true;
     }
