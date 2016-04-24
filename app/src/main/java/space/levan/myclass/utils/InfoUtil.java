@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * Created by 339 on 2016/4/16.
  */
-public class InfoUtils {
+public class InfoUtil {
 
     /**
      * 保存token

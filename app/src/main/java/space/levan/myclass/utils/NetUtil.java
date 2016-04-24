@@ -10,13 +10,13 @@ import space.levan.myclass.tool.StreamTools;
 /**
  * Created by 339 on 2016/4/16.
  */
-public class NetUtils {
+public class NetUtil {
 
     final static String BaseURL = "http://api.13550101.com/";
 
     /**
      * 封装网络链接以便重复调用
-     * 其他函数调用记得return NetUtils.NetConn(URL);
+     * 其他函数调用记得return NetUtil.NetConn(URL);
      * @param URL
      * @return
      */
@@ -54,7 +54,7 @@ public class NetUtils {
                     + "&password="
                     + URLEncoder.encode(mPassWord,"UTF-8");
 
-            return NetUtils.NetConn(URL);
+            return NetUtil.NetConn(URL);
 
         }catch (Exception e) {
             e.printStackTrace();
@@ -73,7 +73,7 @@ public class NetUtils {
             String URL = BaseURL + "user/info?token=" +
                     URLEncoder.encode(mToken,"UTF-8");
 
-            return NetUtils.NetConn(URL);
+            return NetUtil.NetConn(URL);
         }catch (Exception e) {
             e.printStackTrace();
         }
@@ -122,7 +122,7 @@ public class NetUtils {
                     "&QQ=" + URLEncoder.encode(mStuQQ,"UTF-8") +
                     "&tel=" + URLEncoder.encode(mStuTEL,"UTF-8");
 
-            return NetUtils.NetConn(URL);
+            return NetUtil.NetConn(URL);
         }catch (Exception e) {
             e.printStackTrace();
         }
@@ -140,7 +140,7 @@ public class NetUtils {
             String URL = BaseURL + "ticknet/card?token=" +
                     URLEncoder.encode(mToken,"UTF-8");
 
-            return NetUtils.NetConn(URL);
+            return NetUtil.NetConn(URL);
         }catch (Exception e) {
             e.printStackTrace();
         }
@@ -158,7 +158,7 @@ public class NetUtils {
             String URL = BaseURL + "contacts/lists?token=" +
                     URLEncoder.encode(mToken,"UTF-8");
 
-            return NetUtils.NetConn(URL);
+            return NetUtil.NetConn(URL);
 
         }catch (Exception e) {
             e.printStackTrace();

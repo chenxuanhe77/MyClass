@@ -1,4 +1,4 @@
-package space.levan.myclass.view.ui;
+package space.levan.myclass.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -22,8 +22,8 @@ import java.util.Map;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import space.levan.myclass.R;
-import space.levan.myclass.utils.InfoUtils;
-import space.levan.myclass.utils.NetUtils;
+import space.levan.myclass.utils.InfoUtil;
+import space.levan.myclass.utils.NetUtil;
 
 /**
  * Created by 339 on 2016/4/22.
@@ -56,7 +56,7 @@ public class CampusCardActivity extends AppCompatActivity {
 
         mListView = (ListView) findViewById(R.id.campus_card_lv);
 
-        Map<String,String> getToken = InfoUtils.getLoginInfo(CampusCardActivity.this);
+        Map<String,String> getToken = InfoUtil.getLoginInfo(CampusCardActivity.this);
         getInfo(getToken.get("StuToken"));
     }
 
@@ -75,7 +75,7 @@ public class CampusCardActivity extends AppCompatActivity {
         new Thread() {
             @Override
             public void run() {
-                final String result = NetUtils.getCampusCardInfo(mToken);
+                final String result = NetUtil.getCampusCardInfo(mToken);
 
                 if (result != null) {
 
@@ -130,7 +130,7 @@ public class CampusCardActivity extends AppCompatActivity {
                                 }
                             });
                         } else if(jsonObject.getInt("error") == 2) {
-                            InfoUtils.deleteUserInfo(CampusCardActivity.this);
+                            InfoUtil.deleteUserInfo(CampusCardActivity.this);
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {

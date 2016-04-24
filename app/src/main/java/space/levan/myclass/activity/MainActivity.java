@@ -1,4 +1,4 @@
-package space.levan.myclass.view.ui;
+package space.levan.myclass.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -24,7 +24,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import java.util.Map;
 
@@ -33,8 +32,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import space.levan.myclass.R;
-import space.levan.myclass.utils.InfoUtils;
-import space.levan.myclass.utils.NetUtils;
+import space.levan.myclass.utils.InfoUtil;
+import space.levan.myclass.utils.NetUtil;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -78,7 +77,7 @@ public class MainActivity extends AppCompatActivity
          * 得到个人信息，用来填充侧边栏
          * 以及对“个人信息”页面的缓存
          */
-        Map<String, String> loginInfo = InfoUtils.getLoginInfo(MainActivity.this);
+        Map<String, String> loginInfo = InfoUtil.getLoginInfo(MainActivity.this);
         if (loginInfo != null) {
             if (loginInfo.get("StuToken") != null) {
                 getStuInfo(loginInfo.get("StuToken"));
@@ -117,7 +116,7 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                InfoUtils.deleteUserInfo(MainActivity.this);
+                InfoUtil.deleteUserInfo(MainActivity.this);
                 initIntent(LoginActivity.class);
                 MainActivity.this.finish();
             }
@@ -152,7 +151,7 @@ public class MainActivity extends AppCompatActivity
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo == null||!networkInfo.isAvailable()) {
             //如果没联网，则从本地的UserInfo里读取数据来填充侧边栏
-            Map<String, String> userInfo = InfoUtils.getUserInfo(MainActivity.this);
+            Map<String, String> userInfo = InfoUtil.getUserInfo(MainActivity.this);
             if(userInfo != null) {
                 mStuID.setText(userInfo.get("StuID"));
                 mStuName.setText(userInfo.get("StuName"));
@@ -164,7 +163,7 @@ public class MainActivity extends AppCompatActivity
             //联网则开启新线程拉取服务器最新的用户数据
             new Thread() {
                 public void run() {
-                    final String result = NetUtils.getUserInfo(mToken);
+                    final String result = NetUtil.getUserInfo(mToken);
                     if (result != null) {
                         try {
                             JSONObject jsonObject = new JSONObject(result);
@@ -174,15 +173,15 @@ public class MainActivity extends AppCompatActivity
                                 String StuQQ = jsonObject.getString("QQ");
                                 String StuTEL = jsonObject.getString("tel");
                                 String StuAvatar = jsonObject.getString("avatar");
-                                boolean isSaveSuccess = InfoUtils.saveUserInfo(MainActivity.this, StuID,
+                                boolean isSaveSuccess = InfoUtil.saveUserInfo(MainActivity.this, StuID,
                                         StuName,StuQQ,StuTEL,StuAvatar);
                                 if (isSaveSuccess) {
-                                    byte[] Avatar = NetUtils.getUserAvatar(StuAvatar);
+                                    byte[] Avatar = NetUtil.getUserAvatar(StuAvatar);
                                     final Bitmap bitmap = BitmapFactory.decodeByteArray(Avatar,0,Avatar.length);
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            Map<String, String> userInfo = InfoUtils.getUserInfo(MainActivity.this);
+                                            Map<String, String> userInfo = InfoUtil.getUserInfo(MainActivity.this);
                                             mStuID.setText(userInfo.get("StuID"));
                                             mStuName.setText(userInfo.get("StuName"));
                                             mStuAvatar.setImageBitmap(bitmap);
@@ -197,7 +196,7 @@ public class MainActivity extends AppCompatActivity
                                     });
                                 }
                             } else if(jsonObject.getInt("error") == 2) {
-                                InfoUtils.deleteUserInfo(MainActivity.this);
+                                InfoUtil.deleteUserInfo(MainActivity.this);
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
