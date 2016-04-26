@@ -10,13 +10,13 @@ import space.levan.myclass.tool.StreamTools;
 /**
  * Created by 339 on 2016/4/16.
  */
-public class NetUtils {
+public class NetUtil {
 
-    final static String BaseURL = "http://wifi.13550101.com/app/";
+    final static String BaseURL = "http://api.13550101.com/";
 
     /**
      * 封装网络链接以便重复调用
-     * 其他函数调用记得return NetUtils.NetConn(URL);
+     * 其他函数调用记得return NetUtil.NetConn(URL);
      * @param URL
      * @return
      */
@@ -34,6 +34,46 @@ public class NetUtils {
             } else {
                 return null;
             }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 使用GET方式登录
+     * @param mUserName
+     * @param mPassWord
+     * @return
+     */
+    public static String loginByGet(String mUserName,String mPassWord) {
+
+        try {
+            String URL = BaseURL + "login/token?username="
+                    + URLEncoder.encode(mUserName,"UTF-8")
+                    + "&password="
+                    + URLEncoder.encode(mPassWord,"UTF-8");
+
+            return NetUtil.NetConn(URL);
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 获取个人信息
+     * @param mToken
+     * @return
+     */
+    public static String getUserInfo(String mToken) {
+
+        try {
+            String URL = BaseURL + "user/info?token=" +
+                    URLEncoder.encode(mToken,"UTF-8");
+
+            return NetUtil.NetConn(URL);
         }catch (Exception e) {
             e.printStackTrace();
         }
@@ -66,65 +106,6 @@ public class NetUtils {
     }
 
     /**
-     * 使用GET方式登录
-     * @param mUserName
-     * @param mPassWord
-     * @return
-     */
-    public static String loginByGet(String mUserName,String mPassWord) {
-
-        try {
-            String URL = BaseURL + "token?username="
-                    + URLEncoder.encode(mUserName,"UTF-8")
-                    + "&password="
-                    + URLEncoder.encode(mPassWord,"UTF-8");
-
-            return NetUtils.NetConn(URL);
-
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
-     * 获取通讯录
-     * @param mToken
-     * @return
-     */
-    public static String getMailList(String mToken) {
-
-        try {
-            String URL = BaseURL + "contacts/list?token=" +
-                    URLEncoder.encode(mToken,"UTF-8");
-
-            return NetUtils.NetConn(URL);
-
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
-     * 获取个人信息
-     * @param mToken
-     * @return
-     */
-    public static String getUserInfo(String mToken) {
-
-        try {
-            String URL = BaseURL + "base_info?token=" +
-                    URLEncoder.encode(mToken,"UTF-8");
-
-            return NetUtils.NetConn(URL);
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
      * 通过token来修改个人信息
      * 但传进来的参数只会有一个是修改过的
      * 利用没修改的那一项来与修改过的拼接新的URL
@@ -136,12 +117,12 @@ public class NetUtils {
     public static String changeUserInfo(String mToken,String mStuQQ,String mStuTEL) {
 
         try {
-            String URL = BaseURL + "update_info?token=" +
+            String URL = BaseURL + "user/update?token=" +
                     URLEncoder.encode(mToken,"UTF-8") +
                     "&QQ=" + URLEncoder.encode(mStuQQ,"UTF-8") +
                     "&tel=" + URLEncoder.encode(mStuTEL,"UTF-8");
 
-            return NetUtils.NetConn(URL);
+            return NetUtil.NetConn(URL);
         }catch (Exception e) {
             e.printStackTrace();
         }
@@ -156,10 +137,29 @@ public class NetUtils {
     public static String getCampusCardInfo(String mToken) {
 
         try {
-            String URL = BaseURL + "base_yikatong?token=" +
+            String URL = BaseURL + "ticknet/card?token=" +
                     URLEncoder.encode(mToken,"UTF-8");
 
-            return NetUtils.NetConn(URL);
+            return NetUtil.NetConn(URL);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 获取通讯录
+     * @param mToken
+     * @return
+     */
+    public static String getMailList(String mToken) {
+
+        try {
+            String URL = BaseURL + "contacts/lists?token=" +
+                    URLEncoder.encode(mToken,"UTF-8");
+
+            return NetUtil.NetConn(URL);
+
         }catch (Exception e) {
             e.printStackTrace();
         }

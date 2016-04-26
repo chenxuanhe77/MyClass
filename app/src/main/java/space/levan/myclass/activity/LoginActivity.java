@@ -1,4 +1,4 @@
-package space.levan.myclass.view.ui;
+package space.levan.myclass.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -22,8 +22,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import space.levan.myclass.R;
-import space.levan.myclass.utils.InfoUtils;
-import space.levan.myclass.utils.NetUtils;
+import space.levan.myclass.utils.InfoUtil;
+import space.levan.myclass.utils.NetUtil;
 
 /**
  * Created by 339 on 2016/4/15.
@@ -114,7 +114,7 @@ public class LoginActivity extends AppCompatActivity {
 
         new Thread() {
             public void run() {
-                final String result = NetUtils.loginByGet(username, password);
+                final String result = NetUtil.loginByGet(username, password);
                 if (result != null) {
                     try {
                         JSONTokener jsonTokener = new JSONTokener(result);
@@ -122,7 +122,7 @@ public class LoginActivity extends AppCompatActivity {
                         final String message = jsonObject.getString("message");
                         if (jsonObject.getInt("error") == 0) {
                             String token = jsonObject.getString("token");
-                            boolean isSaveSuccess = InfoUtils.saveUserInfo(LoginActivity.this,token);
+                            boolean isSaveSuccess = InfoUtil.saveUserInfo(LoginActivity.this,token);
                             if (isSaveSuccess) {
                                 runOnUiThread(new Runnable() {
                                     @Override

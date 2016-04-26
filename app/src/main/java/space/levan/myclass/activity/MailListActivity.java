@@ -1,6 +1,5 @@
-package space.levan.myclass.view.ui;
+package space.levan.myclass.activity;
 
-import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,8 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 import space.levan.myclass.R;
-import space.levan.myclass.utils.InfoUtils;
-import space.levan.myclass.utils.NetUtils;
+import space.levan.myclass.utils.InfoUtil;
+import space.levan.myclass.utils.NetUtil;
 
 /**
  * Created by 339 on 2016/4/16.
@@ -87,9 +86,9 @@ public class MailListActivity extends AppCompatActivity {
 
             public void run() {
 
-                Map<String, String> getToken = InfoUtils.getLoginInfo(MailListActivity.this);
+                Map<String, String> getToken = InfoUtil.getLoginInfo(MailListActivity.this);
                 final String mToken = getToken.get("StuToken");
-                final String result = NetUtils.getMailList(mToken);
+                final String result = NetUtil.getMailList(mToken);
 
                 if(result != null) {
 
@@ -136,7 +135,7 @@ public class MailListActivity extends AppCompatActivity {
                                 }
                             });
                         } else if(jsonObject.getInt("error") == 2) {
-                            InfoUtils.deleteUserInfo(MailListActivity.this);
+                            InfoUtil.deleteUserInfo(MailListActivity.this);
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {

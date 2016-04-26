@@ -1,4 +1,4 @@
-package space.levan.myclass.view.ui;
+package space.levan.myclass.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;

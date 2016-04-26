@@ -1,4 +1,4 @@
-package space.levan.myclass.view.ui;
+package space.levan.myclass.activity;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -26,8 +26,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import space.levan.myclass.R;
-import space.levan.myclass.utils.InfoUtils;
-import space.levan.myclass.utils.NetUtils;
+import space.levan.myclass.utils.InfoUtil;
+import space.levan.myclass.utils.NetUtil;
 
 /**
  * Created by 339 on 2016/4/19.
@@ -97,7 +97,7 @@ public class StuFileActivity extends AppCompatActivity {
      */
     public void initInfo() {
 
-        final Map<String, String> userInfo = InfoUtils.getUserInfo(StuFileActivity.this);
+        final Map<String, String> userInfo = InfoUtil.getUserInfo(StuFileActivity.this);
         mStuId.setText(userInfo.get("StuID"));
         mStuName.setText(userInfo.get("StuName"));
         mStuQQ.setText(userInfo.get("StuQQ"));
@@ -110,7 +110,7 @@ public class StuFileActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    byte[] Avatar = NetUtils.getUserAvatar(userInfo.get("StuAvatar"));
+                    byte[] Avatar = NetUtil.getUserAvatar(userInfo.get("StuAvatar"));
                     final Bitmap bitmap = BitmapFactory.decodeByteArray(Avatar, 0, Avatar.length);
                     runOnUiThread(new Runnable() {
                         @Override
@@ -164,7 +164,7 @@ public class StuFileActivity extends AppCompatActivity {
                     new Thread() {
                         @Override
                         public void run() {
-                            Map<String, String> getInfo = InfoUtils.getLoginInfo(StuFileActivity.this);
+                            Map<String, String> getInfo = InfoUtil.getLoginInfo(StuFileActivity.this);
                             String mToken = getInfo.get("StuToken");
                             //获取token用来发起请求修改数据
                             if (tag == 1) {
@@ -174,7 +174,7 @@ public class StuFileActivity extends AppCompatActivity {
                                         mProDialog = ProgressDialog.show(StuFileActivity.this,"","加载中，请稍候...");
                                     }
                                 });
-                                final String result = NetUtils.changeUserInfo(mToken,Info,TEL);
+                                final String result = NetUtil.changeUserInfo(mToken,Info,TEL);
                                 if (result != null) {
                                     getResult(result,tag,Info);
                                 }else {
@@ -198,7 +198,7 @@ public class StuFileActivity extends AppCompatActivity {
                                             mProDialog = ProgressDialog.show(StuFileActivity.this,"","加载中，请稍候...");
                                         }
                                     });
-                                    final String result = NetUtils.changeUserInfo(mToken,QQ,Info);
+                                    final String result = NetUtil.changeUserInfo(mToken,QQ,Info);
                                     if (result != null) {
                                         getResult(result,tag,Info);
                                     }else {
@@ -232,39 +232,42 @@ public class StuFileActivity extends AppCompatActivity {
                          * @param str
                          */
                         public void getResult(String result,final int tag, final String str) {
-                            if (result != null) {
-                                try {
-                                    JSONObject jsonObject = new JSONObject(result);
-                                    final String message = jsonObject.getString("message");
-                                    if (jsonObject.getInt("error") == 0) {
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                Toast.makeText(StuFileActivity.this,message,Toast.LENGTH_SHORT).show();
-                                                InfoUtils.updateUserInfo(StuFileActivity.this,tag,str);
+
+                            try {
+                                JSONObject jsonObject = new JSONObject(result);
+                                final String message = jsonObject.getString("message");
+                                if (jsonObject.getInt("error") == 0) {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(StuFileActivity.this,message,Toast.LENGTH_SHORT).show();
+                                            boolean isSaveSuccess = InfoUtil.updateUserInfo(StuFileActivity.this,tag,str);
+                                            if(isSaveSuccess) {
                                                 initInfo();
                                                 mProDialog.dismiss();
+                                            }else {
+                                                Toast.makeText(StuFileActivity.this,"更新数据保存失败",Toast.LENGTH_SHORT).show();
                                             }
-                                        });
-                                    } else if(jsonObject.getInt("error") == 2) {
-                                        InfoUtils.deleteUserInfo(StuFileActivity.this);
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                mProDialog.dismiss();
-                                                final Intent intent = getPackageManager().
-                                                        getLaunchIntentForPackage(getPackageName());
-                                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                startActivity(intent);
-                                                Toast.makeText(StuFileActivity.this,
-                                                        "数据异常，请重新登录帐号",Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-                                    }
-
-                                }catch (Exception e) {
-                                    e.printStackTrace();
+                                        }
+                                    });
+                                } else if(jsonObject.getInt("error") == 2) {
+                                    InfoUtil.deleteUserInfo(StuFileActivity.this);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mProDialog.dismiss();
+                                            final Intent intent = getPackageManager().
+                                                    getLaunchIntentForPackage(getPackageName());
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            startActivity(intent);
+                                            Toast.makeText(StuFileActivity.this,
+                                                    "数据异常，请重新登录帐号",Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                                 }
+
+                            }catch (Exception e) {
+                                e.printStackTrace();
                             }
                         }
                     }.start();

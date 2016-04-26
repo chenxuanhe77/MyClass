@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * Created by 339 on 2016/4/16.
  */
-public class InfoUtils {
+public class InfoUtil {
 
     final static String BaseURL = "http://wifi.13550101.com/app/";
 
@@ -48,12 +48,7 @@ public class InfoUtils {
     public static boolean deleteUserInfo(Context context) {
         SharedPreferences sp = context.getSharedPreferences("UserData",Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = sp.edit();
-        edit.remove("StuToken");
-        edit.remove("StuID");
-        edit.remove("StuName");
-        edit.remove("StuQQ");
-        edit.remove("StuTEL");
-        edit.remove("StuAvatar");
+        edit.clear();
         edit.commit();
         return true;
     }
