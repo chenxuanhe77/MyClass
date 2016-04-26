@@ -11,6 +11,8 @@ import java.util.Map;
  */
 public class InfoUtils {
 
+    final static String BaseURL = "http://wifi.13550101.com/app/";
+
     /**
      * 保存token
      * @param context
