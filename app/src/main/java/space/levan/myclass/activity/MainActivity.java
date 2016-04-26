@@ -70,7 +70,6 @@ public class MainActivity extends AppCompatActivity
 
         mNavigationView.setNavigationItemSelectedListener(this);
 
-
         /**
          * 用来判断本地是否有token
          * 如果有，则利用token发起网络请求
