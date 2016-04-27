@@ -3,9 +3,12 @@ package space.levan.myclass.activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -36,6 +39,8 @@ public class CampusCardActivity extends AppCompatActivity {
     TextView mCardID;
     @Bind(R.id.card_balance)
     TextView mCardBalance;
+    @Bind(R.id.swipeLayout)
+    SwipeRefreshLayout mSwipeLayout;
 
     private List<HashMap<String, Object>> CardInfos;
     private HashMap<String, Object> CardInfo;
@@ -56,8 +61,33 @@ public class CampusCardActivity extends AppCompatActivity {
 
         mListView = (ListView) findViewById(R.id.campus_card_lv);
 
-        Map<String,String> getToken = InfoUtil.getLoginInfo(CampusCardActivity.this);
+        final Map<String,String> getToken = InfoUtil.getLoginInfo(CampusCardActivity.this);
         getInfo(getToken.get("StuToken"));
+
+        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                View firstView = view.getChildAt(firstVisibleItem);
+                if (firstVisibleItem == 0&& (firstView ==null || firstView.getTop() == 0)) {
+                    mSwipeLayout.setEnabled(true);
+                } else {
+                    mSwipeLayout.setEnabled(false);
+                }
+            }
+        });
+
+        mSwipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getInfo(getToken.get("StuToken"));
+                mSwipeLayout.setRefreshing(false);
+            }
+        });
     }
 
     /**

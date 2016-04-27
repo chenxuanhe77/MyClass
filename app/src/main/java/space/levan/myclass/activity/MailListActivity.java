@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import space.levan.myclass.R;
 import space.levan.myclass.utils.InfoUtil;
 import space.levan.myclass.utils.NetUtil;
@@ -31,6 +34,9 @@ import space.levan.myclass.utils.NetUtil;
  * Created by 339 on 2016/4/16.
  */
 public class MailListActivity extends AppCompatActivity {
+
+    @Bind(R.id.refreshMail)
+    SwipeRefreshLayout mRefreshMail;
 
     private List<HashMap<String, Object>> MailInfos;
     private HashMap<String, Object> MailInfo;
@@ -43,6 +49,7 @@ public class MailListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mail_list);
 
+        ButterKnife.bind(this);
         setTitle("通讯录");
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -50,6 +57,16 @@ public class MailListActivity extends AppCompatActivity {
         mListView = (ListView) findViewById(R.id.MailInfo_LV);
 
         FillData();
+
+        mRefreshMail.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mRefreshMail.setRefreshing(true);
+                FillData();
+                mRefreshMail.setRefreshing(false);
+            }
+        });
+
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
