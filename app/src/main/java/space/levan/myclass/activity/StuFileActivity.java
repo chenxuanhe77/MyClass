@@ -26,6 +26,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import space.levan.myclass.R;
+import space.levan.myclass.tool.StatusBarCompat;
 import space.levan.myclass.utils.InfoUtil;
 import space.levan.myclass.utils.NetUtil;
 
@@ -83,6 +84,9 @@ public class StuFileActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stu_file);
+
+        StatusBarCompat.setStatusBarColor(this);
+
         ButterKnife.bind(this);
         setTitle("个人信息");
         ActionBar actionBar = getSupportActionBar();

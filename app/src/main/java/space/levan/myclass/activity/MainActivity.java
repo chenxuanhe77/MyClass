@@ -225,16 +225,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public void onBackPressed() {
-
-        if (mDrawer.isDrawerOpen(GravityCompat.START)) {
-            mDrawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
     /**
      * 以下两个函数用于创建右上角按钮以及点击事件
      * @param menu
@@ -301,6 +291,10 @@ public class MainActivity extends AppCompatActivity
         if (keyCode == KeyEvent.KEYCODE_BACK
                 && event.getAction() == KeyEvent.ACTION_DOWN) {
 
+            if (mDrawer.isDrawerOpen(GravityCompat.START)) {
+                mDrawer.closeDrawer(GravityCompat.START);
+            }
+
             if ((System.currentTimeMillis() - exitTime) > 3000) {
                 Snackbar.make(mContainer, R.string.home_exit,
                         Snackbar.LENGTH_LONG).show();
@@ -309,7 +303,8 @@ public class MainActivity extends AppCompatActivity
                 finish();
             }
             return true;
-        }
+            }
+
         return super.onKeyDown(keyCode, event);
     }
 }
