@@ -92,6 +92,23 @@ public class StuFileActivity extends AppCompatActivity {
     }
 
     /**
+     * 用于界面返回按钮
+     * @param item
+     * @return
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
      * 从本地获取姓名，QQ，TEL，ID
      * 从网络获取头像
      */
@@ -280,22 +297,5 @@ public class StuFileActivity extends AppCompatActivity {
                 setTextColor(getResources().getColor(R.color.colorPrimary));
     }
 
-    /**
-     * 用于界面返回按钮
-     * @param item
-     * @return
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                this.finish();
-                break;
-        }
 
-        return super.onOptionsItemSelected(item);
-    }
 }
