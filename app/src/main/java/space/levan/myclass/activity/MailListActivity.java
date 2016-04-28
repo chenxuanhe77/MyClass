@@ -111,76 +111,78 @@ public class MailListActivity extends AppCompatActivity {
 
                     try {
                         JSONObject jsonObject = new JSONObject(result);
-                        if(jsonObject.getInt("error") == 0){
-                            JSONArray jsonArray = jsonObject.getJSONArray("data");
-                            MailInfos = new ArrayList<>();
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                JSONObject jo = (JSONObject) jsonArray.get(i);
-                                String StuID = jo.getString("xuehao");
-                                String StuName = jo.getString("name");
-                                String StuQQ = jo.getString("QQ");
-                                String StuTEL = jo.getString("tel");
+                        String message = jsonObject.getString("message");
+                        int error = jsonObject.getInt("error");
+                        switch (error) {
+                            case 0:
+                                JSONArray jsonArray = jsonObject.getJSONArray("data");
+                                MailInfos = new ArrayList<>();
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject jo = (JSONObject) jsonArray.get(i);
+                                    String StuID = jo.getString("xuehao");
+                                    String StuName = jo.getString("name");
+                                    String StuQQ = jo.getString("QQ");
+                                    String StuTEL = jo.getString("tel");
 
-                                MailInfo = new HashMap<>();
-                                MailInfo.put("StuID","学号："+StuID);
-                                MailInfo.put("StuName","姓名："+StuName);
-                                MailInfo.put("StuQQ","QQ："+StuQQ);
-                                MailInfo.put("StuTEL","电话："+StuTEL);
+                                    MailInfo = new HashMap<>();
+                                    MailInfo.put("StuID","学号："+StuID);
+                                    MailInfo.put("StuName","姓名："+StuName);
+                                    MailInfo.put("StuQQ","QQ："+StuQQ);
+                                    MailInfo.put("StuTEL","电话："+StuTEL);
 
-                                MailInfos.add(MailInfo);
-                            }
-
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    SimpleAdapter adapter = new SimpleAdapter(MailListActivity.this,
-                                            MailInfos,R.layout.item_mail,
-                                            new String[]{"StuID","StuName","StuQQ","StuTEL"},
-                                            new int[]{R.id.StuID,R.id.StuName,R.id.StuQQ,R.id.StuTEL});
-                                    mListView.setAdapter(adapter);
-                                    mProDialog.dismiss();
+                                    MailInfos.add(MailInfo);
                                 }
-                            });
-
-                        } else if(jsonObject.getInt("error") == 1) {
-                            final String message = jsonObject.getString("message");
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(MailListActivity.this, "" + message,
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        } else if(jsonObject.getInt("error") == 2) {
-                            InfoUtil.deleteUserInfo(MailListActivity.this);
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mProDialog.dismiss();
-                                    final Intent intent = getPackageManager().
-                                            getLaunchIntentForPackage(getPackageName());
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    startActivity(intent);
-                                    Toast.makeText(MailListActivity.this,
-                                            "数据异常，请重新登录帐号",Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                                initData();
+                                break;
+                            case 1:
+                                setToast(message);
+                                break;
+                            case 2:
+                                setToast(message);
+                                InfoUtil.deleteUserInfo(MailListActivity.this);
+                                final Intent intent = getPackageManager().
+                                        getLaunchIntentForPackage(getPackageName());
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                                break;
+                            default:
+                                break;
                         }
                     }catch (Exception e) {
                         e.printStackTrace();
                     }
 
                 }else {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mProDialog.dismiss();
-                            Toast.makeText(MailListActivity.this,"请求失败",Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    setToast("请求失败");
                 }
             }
         }.start();
+    }
+
+    public void setToast(final String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(MailListActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**
+     * 填充ListView数据
+     */
+    public void initData() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                SimpleAdapter adapter = new SimpleAdapter(MailListActivity.this,
+                        MailInfos,R.layout.item_mail,
+                        new String[]{"StuID","StuName","StuQQ","StuTEL"},
+                        new int[]{R.id.StuID,R.id.StuName,R.id.StuQQ,R.id.StuTEL});
+                mListView.setAdapter(adapter);
+                mProDialog.dismiss();
+            }
+        });
     }
 
     /**

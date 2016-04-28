@@ -16,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -117,57 +116,46 @@ public class LoginActivity extends AppCompatActivity {
                 final String result = NetUtil.loginByGet(username, password);
                 if (result != null) {
                     try {
-                        JSONTokener jsonTokener = new JSONTokener(result);
-                        JSONObject jsonObject = (JSONObject) jsonTokener.nextValue();
+                        JSONObject jsonObject = new JSONObject(result);
                         final String message = jsonObject.getString("message");
-                        if (jsonObject.getInt("error") == 0) {
-                            String token = jsonObject.getString("token");
-                            boolean isSaveSuccess = InfoUtil.saveUserInfo(LoginActivity.this,token);
-                            if (isSaveSuccess) {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
-                                        initIntent(MainActivity.class);
-                                        finish();
-                                    }
-                                });
-                            }else {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(LoginActivity.this, "保存登录信息失败", Toast.LENGTH_SHORT).show();
-                                        mButton.setClickable(true);
-                                        mButton.setText("登录");
-                                    }
-                                });
-                            }
-                        } else if(jsonObject.getInt("error") == 1) {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(LoginActivity.this, "" + message,
-                                            Toast.LENGTH_SHORT).show();
-                                    mButton.setClickable(true);
-                                    mButton.setText("登录");
+                        int error  = jsonObject.getInt("error");
+                        switch (error) {
+                            case 0:
+                                String token = jsonObject.getString("token");
+                                boolean isSaveSuccess = InfoUtil.saveUserInfo(LoginActivity.this,token);
+                                if (isSaveSuccess) {
+                                    setToast("登录成功");
+                                    initIntent(MainActivity.class);
+                                    finish();
+                                }else {
+                                    setToast("保存登录信息失败");
                                 }
-                            });
+                                break;
+                            case 1:
+                                setToast(message);
+                                break;
+                            default:
+                                break;
                         }
                     }catch (Exception e) {
                         e.printStackTrace();
                     }
                 } else {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(LoginActivity.this, "请求失败", Toast.LENGTH_SHORT).show();
-                            mButton.setClickable(true);
-                            mButton.setText("登录");
-                        }
-                    });
+                    setToast("请求失败");
                 }
             }
         }.start();
+    }
+
+    public void setToast(final String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(LoginActivity.this, ""+message, Toast.LENGTH_SHORT).show();
+                mButton.setClickable(true);
+                mButton.setText("登录");
+            }
+        });
     }
 
     /**
