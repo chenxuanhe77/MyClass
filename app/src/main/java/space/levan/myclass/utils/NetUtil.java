@@ -5,6 +5,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import space.levan.myclass.tool.StreamTools;
+
 /**
  * Created by 339 on 2016/4/16.
  */

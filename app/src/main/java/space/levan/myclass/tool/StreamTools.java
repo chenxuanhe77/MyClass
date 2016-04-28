@@ -1,4 +1,4 @@
-package space.levan.myclass.utils;
+package space.levan.myclass.tool;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
