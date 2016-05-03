@@ -268,7 +268,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_stuCard) {
             initIntent(CampusCardActivity.class);
         } else if (id == R.id.nav_slideshow) {
-
+            initIntent(ScheduleActivity.class);
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_mail) {
