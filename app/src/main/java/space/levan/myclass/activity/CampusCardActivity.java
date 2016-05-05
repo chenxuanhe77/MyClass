@@ -224,7 +224,6 @@ public class CampusCardActivity extends AppCompatActivity {
                 this.finish();
                 break;
         }
-
         return super.onOptionsItemSelected(item);
     }
 }
