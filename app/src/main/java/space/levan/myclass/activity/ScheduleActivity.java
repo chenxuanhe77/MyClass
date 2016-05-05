@@ -1,16 +1,28 @@
 package space.levan.myclass.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -19,6 +31,8 @@ import it.neokree.materialtabs.MaterialTabHost;
 import it.neokree.materialtabs.MaterialTabListener;
 import space.levan.myclass.R;
 import space.levan.myclass.fragment.LessonFragment;
+import space.levan.myclass.utils.InfoUtil;
+import space.levan.myclass.utils.NetUtil;
 
 /**
  * Created by 339 on 2016/5/3.
@@ -31,6 +45,9 @@ public class ScheduleActivity extends AppCompatActivity implements MaterialTabLi
 
     ViewPagerAdapter adapter;
 
+    private List<HashMap<String, Object>> ClassInfos;
+    private HashMap<String, Object> ClassInfo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,8 +58,7 @@ public class ScheduleActivity extends AppCompatActivity implements MaterialTabLi
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.get(Calendar.DAY_OF_WEEK);
+        Fragment lessonFragment;
 
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(adapter);
@@ -56,7 +72,7 @@ public class ScheduleActivity extends AppCompatActivity implements MaterialTabLi
         });
 
         // insert all tabs from pagerAdapter data
-        for (int i = 1; i < adapter.getCount()+1; i++) {
+        for (int i = 0; i < adapter.getCount(); i++) {
             mTabHost.addTab(
                     mTabHost.newTab()
                             .setText(adapter.getPageTitle(i))
@@ -64,6 +80,110 @@ public class ScheduleActivity extends AppCompatActivity implements MaterialTabLi
             );
 
         }
+
+        Calendar calendar = Calendar.getInstance();
+        int temp = calendar.get(Calendar.DAY_OF_WEEK) - 2;
+        mViewPager.setCurrentItem(temp);
+
+        Map<String, String> loginInfo = InfoUtil.getLoginInfo(ScheduleActivity.this);
+        getLesson(loginInfo.get("StuToken"));
+    }
+
+    public String getLesson(final String mToken) {
+
+        new Thread() {
+            public void run() {
+                String result = NetUtil.getSchedule(mToken);
+                if (result != null) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(result);
+                        int error = jsonObject.getInt("error");
+                        String message = jsonObject.getString("message");
+                        switch (error) {
+                            case 0:
+                                getDes(jsonObject);
+                                break;
+                            case 1:
+                                showToast(message);
+                                break;
+                            case 2:
+                                reLogin();
+                                break;
+                            default:
+                                break;
+                        }
+                    }catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    showToast("数据异常");
+                }
+            }
+        }.start();
+
+        return null;
+    }
+
+    private void getDes(JSONObject jsonObject) {
+        try {
+            JSONObject Object = jsonObject.getJSONObject("data");
+            JSONObject data = Object.getJSONObject("data");
+            for (int i = 1; i < 7; i++) {
+                JSONObject day = data.getJSONObject(""+i);
+                for (int n = 1; n < 5; n++) {
+                    JSONArray lesson = day.getJSONArray(""+n);
+                    ClassInfos = new ArrayList<>();
+                    for(int m = 0; m < lesson.length();m++) {
+                        JSONObject des = (JSONObject) lesson.get(m);
+                        String name = des.getString("course");
+                        String teacher = des.getString("teacher");
+                        String time = des.getString("time");
+                        String room = des.getString("classroom");
+
+                        /*showToast("星期：" + i + "\n节次：" + n + "\n课程名字："
+                                + name + "\n任课老师：" + teacher + "\n上课周数：" + time
+                                + "\n教室：" + room);*/
+                        ClassInfo = new HashMap<>();
+                        ClassInfo.put("Name","课程名字：" + name);
+                        ClassInfo.put("Teacher","上课老师：" + teacher);
+                        ClassInfo.put("Time","上课周次：" + time);
+                        ClassInfo.put("Room","上课教室：" + room);
+
+                        ClassInfos.add(ClassInfo);
+                    }
+                }
+
+            }
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showToast(final String message) {
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(ScheduleActivity.this,message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void reLogin() {
+
+        InfoUtil.deleteUserInfo(ScheduleActivity.this);
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                final Intent intent = getPackageManager().
+                        getLaunchIntentForPackage(getPackageName());
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                Toast.makeText(ScheduleActivity.this,
+                        "数据异常，请重新登录帐号",Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -85,7 +205,6 @@ public class ScheduleActivity extends AppCompatActivity implements MaterialTabLi
 
         public ViewPagerAdapter(FragmentManager fm) {
             super(fm);
-
         }
 
         public Fragment getItem(int num) {
@@ -99,7 +218,8 @@ public class ScheduleActivity extends AppCompatActivity implements MaterialTabLi
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return "星期" + position;
+            int temp = position+1;
+            return "星期" + temp;
         }
     }
 
