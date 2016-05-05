@@ -11,13 +11,13 @@
             android:icon="@drawable/ic_menu_gallery"
             android:title="@string/campus_card" />
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/nav_schedule"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
+            android:title="@string/schedule" />
         <item
             android:id="@+id/nav_manage"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:title="@string/manage" />
     </group>
 
     <item android:title="Communicate">

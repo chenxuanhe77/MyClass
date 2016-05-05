@@ -19,7 +19,7 @@ public class StatusBarCompat {
     public static final String TAG = StatusBarCompat.class.getName();
 
     public static final int COLOR_DEFAULT_WHITE = Color.parseColor("#FFFFFFFF");
-    public static final int COLOR_DEFAULT_PINK = Color.parseColor("#FFEF4968");
+    public static final int COLOR_DEFAULT_PINK = Color.parseColor("#1B1B1B");
 
     public static void setStatusBarColor(Activity activity) {
         setStatusBarColor(activity, COLOR_DEFAULT_PINK);
