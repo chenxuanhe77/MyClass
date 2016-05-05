@@ -7,6 +7,8 @@ import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
 
+    @Nullable
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
     @Bind(R.id.coordinatorLayout)
@@ -267,8 +270,8 @@ public class MainActivity extends AppCompatActivity
             initIntent(StuFileActivity.class);
         } else if (id == R.id.nav_stuCard) {
             initIntent(CampusCardActivity.class);
-        } else if (id == R.id.nav_slideshow) {
-
+        } else if (id == R.id.nav_schedule) {
+            initIntent(ScheduleActivity.class);
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_mail) {

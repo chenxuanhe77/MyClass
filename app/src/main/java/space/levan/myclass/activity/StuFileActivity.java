@@ -302,4 +302,10 @@ public class StuFileActivity extends AppCompatActivity {
     }
 
 
+<<<<<<< HEAD
 }
+=======
+        return super.onOptionsItemSelected(item);
+    }
+}
+>>>>>>> refs/remotes/WangZhiYao/master

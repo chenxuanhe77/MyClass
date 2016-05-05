@@ -165,4 +165,23 @@ public class NetUtil {
         }
         return null;
     }
+
+    /**
+     * 利用Token获取课程表
+     * @param mToken
+     * @return
+     */
+    public static String getSchedule(String mToken) {
+
+        try {
+            String URL = BaseURL + "ticknet/schedule?token=" +
+                    URLEncoder.encode(mToken,"UTF-8");
+
+            return NetUtil.NetConn(URL);
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
