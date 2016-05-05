@@ -11,7 +11,7 @@
         android:layout_marginTop="5dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cardBackgroundColor="#42C4BC"
+        app:cardBackgroundColor="#42C4B67C"
         android:foreground="?attr/selectableItemBackground">
         <LinearLayout
             android:layout_width="wrap_content"
