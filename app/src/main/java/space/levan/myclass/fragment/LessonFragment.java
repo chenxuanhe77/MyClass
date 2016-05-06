@@ -15,7 +15,8 @@ import android.widget.TextView;
  */
 public class LessonFragment extends Fragment {
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         TextView text = new TextView(container.getContext());
         text.setText("(╯°Д°)╯︵┴┴");
         text.setGravity(Gravity.CENTER);
