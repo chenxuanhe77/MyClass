@@ -12,7 +12,15 @@
 
 ##### 以下是部分截图：
 登录界面：  
-<img src="/screenshot/Login.png" width="260px"/>
+<img src="/screenshot/Login.png" width="260px"/>  
+主界面：  
+<img src="/screenshot/Main.png" width="260px"/>  
+个人信息界面：  
+<img src="/screenshot/StuFile.png" width="260px"/>  
+校园卡消费记录界面：  
+<img src="/screenshot/CampusCard.png" width="260px"/>  
+课程表界面：  
+<img src="/screenshot/Lesson.png" width="260px"/>  
 
 ##LICENSE##
       Copyright 2016  WangZhiYao
