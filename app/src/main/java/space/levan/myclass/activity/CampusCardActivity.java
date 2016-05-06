@@ -25,6 +25,7 @@ import java.util.Map;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import space.levan.myclass.R;
+import space.levan.myclass.tool.StatusBarCompat;
 import space.levan.myclass.utils.InfoUtil;
 import space.levan.myclass.utils.NetUtil;
 
@@ -52,6 +53,8 @@ public class CampusCardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_campus_card);
+
+        StatusBarCompat.setStatusBarColor(this);
 
         ButterKnife.bind(this);
 

@@ -1,5 +1,6 @@
 package space.levan.myclass.activity;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -24,6 +25,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.tencent.android.tpush.XGPushManager;
 
 import org.json.JSONObject;
 
@@ -72,6 +75,9 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         mNavigationView.setNavigationItemSelectedListener(this);
+
+        Context context = getApplicationContext();
+        XGPushManager.registerPush(context);
 
         /**
          * 用来判断本地是否有token
