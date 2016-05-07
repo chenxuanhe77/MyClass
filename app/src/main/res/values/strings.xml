@@ -16,6 +16,9 @@
     <string name="home_choose">查看指定周</string>
     <string name="home_exit">再按一次退出</string>
 
+    <string name="card_name">姓名：</string>
+    <string name="card_number">卡号：</string>
+    <string name="card_balance">余额：</string>
     <string name="stu_file">个人档案</string>
     <string name="campus_card">校园卡记录</string>
     <string name="schedule">课程表</string>
