@@ -182,13 +182,14 @@ public class MainActivity extends AppCompatActivity
                         try {
                             JSONObject jsonObject = new JSONObject(result);
                             if (jsonObject.getInt("error") == 0) {
+                                String StuWeek = jsonObject.getString("week");
                                 String StuID = jsonObject.getString("xuehao");
                                 String StuName = jsonObject.getString("name");
                                 String StuQQ = jsonObject.getString("QQ");
                                 String StuTEL = jsonObject.getString("tel");
                                 String StuAvatar = jsonObject.getString("avatar");
-                                boolean isSaveSuccess = InfoUtil.saveUserInfo(MainActivity.this, StuID,
-                                        StuName,StuQQ,StuTEL,StuAvatar);
+                                boolean isSaveSuccess = InfoUtil.saveUserInfo(MainActivity.this,StuWeek,
+                                        StuID,StuName,StuQQ,StuTEL,StuAvatar);
                                 if (isSaveSuccess) {
                                     byte[] Avatar = NetUtil.getUserAvatar(StuAvatar);
                                     final Bitmap bitmap = BitmapFactory.decodeByteArray(Avatar,0,Avatar.length);

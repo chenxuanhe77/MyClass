@@ -1,6 +1,7 @@
 package space.levan.myclass.activity;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -47,9 +49,14 @@ public class ScheduleActivity extends AppCompatActivity implements MaterialTabLi
     ViewPagerAdapter adapter;
 
     private List<HashMap<String, Object>>[] weekCourses;
-
     private ProgressDialog mProDialog;
-
+    private String mToken;
+    final String[] Weeks =
+            {"第1周","第2周","第3周","第4周",
+            "第5周","第6周","第7周","第8周",
+            "第9周","第10周","第11周","第12周",
+            "第13周","第14周","第15周","第16周",
+            "第17周","第18周","第19周","第20周",};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +69,12 @@ public class ScheduleActivity extends AppCompatActivity implements MaterialTabLi
         setTitle("课程表");
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+
+        Map<String,String> weekInfo = InfoUtil.getWeek(ScheduleActivity.this);
+        String week = weekInfo.get("StuWeek");
+        Map<String, String> loginInfo = InfoUtil.getLoginInfo(ScheduleActivity.this);
+        mToken = loginInfo.get("StuToken");
+        getLesson(mToken,2,week);
 
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(adapter);
@@ -90,18 +103,17 @@ public class ScheduleActivity extends AppCompatActivity implements MaterialTabLi
         Calendar calendar = Calendar.getInstance();
         int temp = calendar.get(Calendar.DAY_OF_WEEK) - 2;
         mViewPager.setCurrentItem(temp);
-
-        Map<String, String> loginInfo = InfoUtil.getLoginInfo(ScheduleActivity.this);
-        getLesson(loginInfo.get("StuToken"));
     }
 
-    public String getLesson(final String mToken) {
+    public String getLesson(final String mToken, final int Code,final String week) {
 
         mProDialog = ProgressDialog.show(ScheduleActivity.this,"","加载中，请稍候...");
 
         new Thread() {
             public void run() {
-                String result = NetUtil.getSchedule(mToken);
+
+                String result = NetUtil.getSchedule(mToken,Code,week);
+
                 if (result != null) {
                     try {
                         JSONObject jsonObject = new JSONObject(result);
@@ -141,7 +153,7 @@ public class ScheduleActivity extends AppCompatActivity implements MaterialTabLi
             JSONObject Object = jsonObject.getJSONObject("data");
             JSONObject data = Object.getJSONObject("data");
             weekCourses = new List[7];
-            for (int i = 1; i < 7; i++) {
+            for (int i = 1; i <= 7; i++) {
                 weekCourses[i - 1] = new ArrayList<>();
                 JSONObject day = data.getJSONObject(""+i);
                 List<HashMap<String, Object>> classInDay = new ArrayList<>();
@@ -260,7 +272,9 @@ public class ScheduleActivity extends AppCompatActivity implements MaterialTabLi
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         //getMenuInflater().inflate(R.menu.main, menu);
-        menu.add(0, 1, 0, R.string.home_about);
+        menu.add(0,1,0, R.string.home_week);
+        menu.add(0,2,0,R.string.home_total);
+        menu.add(0,3,0,R.string.home_choose);
         return true;
     }
 
@@ -270,7 +284,7 @@ public class ScheduleActivity extends AppCompatActivity implements MaterialTabLi
      * @return
      */
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -279,6 +293,26 @@ public class ScheduleActivity extends AppCompatActivity implements MaterialTabLi
                 this.finish();
                 break;
             case 1:
+                Map<String,String> weekInfo = InfoUtil.getWeek(ScheduleActivity.this);
+                String week = weekInfo.get("StuWeek");
+                getLesson(mToken,2,week);
+                setTitle("课程表" + "    当前周");
+                break;
+            case 2:
+                getLesson(mToken,1,null);
+                setTitle("课程表" + "    总课表");
+                break;
+            case 3:
+                AlertDialog.Builder builder = new AlertDialog.Builder(ScheduleActivity.this);
+                builder.setTitle("请选择：");
+                builder.setItems(Weeks, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String week = Integer.toString(which+1);
+                        getLesson(mToken,2,week);
+                        setTitle("课程表" + "    第" + week+"周");
+                    }
+                }).show();
                 break;
             default:
                 break;
