@@ -141,9 +141,9 @@ public class ScheduleActivity extends AppCompatActivity implements MaterialTabLi
             JSONObject data = Object.getJSONObject("data");
             weekCourses = new List[7];
             for (int i = 1; i < 7; i++) {
-                weekCourses[i - 1] = new ArrayList<>();
+                weekCourses[i-1]= new ArrayList<>();
                 JSONObject day = data.getJSONObject(""+i);
-                List<HashMap<String, Object>> classInDay = new ArrayList<>();
+                List<HashMap<String, Object>> DayClass = new ArrayList<>();
                 for (int n = 1; n <= 5; n++) {
                     JSONArray lesson = day.getJSONArray(""+n);
                     for(int m = 0; m < lesson.length();m++) {
@@ -160,10 +160,10 @@ public class ScheduleActivity extends AppCompatActivity implements MaterialTabLi
                         ClassInfo.put("Time","上课周次：" + time);
                         ClassInfo.put("Room","上课教室：" + room);
 
-                        classInDay.add(ClassInfo);
+                        DayClass.add(ClassInfo);
                     }
                 }
-                weekCourses[i-1] = classInDay;
+                weekCourses[i-1] = DayClass;
             }
 
             Log.d("cxy", "getDes: data end");

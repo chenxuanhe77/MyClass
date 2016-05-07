@@ -20,8 +20,8 @@ import space.levan.myclass.R;
  */
 public class LessonFragment extends Fragment {
 
-    private List<HashMap<String, Object>> data = new ArrayList<>(0);
     private RecyclerView recyclerView;
+    private List<HashMap<String, Object>> data = new ArrayList<>(0);
 
     /**
      创新视图
