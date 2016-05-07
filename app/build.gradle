@@ -28,4 +28,5 @@ dependencies {
     compile 'com.android.support:cardview-v7:23.3.0'
     compile 'de.hdodenhof:circleimageview:2.0.0'
     compile 'it.neokree:MaterialTabs:0.11'
+    compile files('libs/Xg_sdk_v2.44_20160505_1023.jar')
 }

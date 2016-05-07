@@ -27,6 +27,7 @@ import java.util.Map;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import space.levan.myclass.R;
+import space.levan.myclass.tool.StatusBarCompat;
 import space.levan.myclass.utils.InfoUtil;
 import space.levan.myclass.utils.NetUtil;
 
@@ -48,6 +49,8 @@ public class MailListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mail_list);
+
+        StatusBarCompat.setStatusBarColor(this);
 
         ButterKnife.bind(this);
         setTitle("通讯录");

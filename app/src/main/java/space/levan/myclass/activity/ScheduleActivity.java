@@ -31,6 +31,7 @@ import it.neokree.materialtabs.MaterialTabHost;
 import it.neokree.materialtabs.MaterialTabListener;
 import space.levan.myclass.R;
 import space.levan.myclass.fragment.LessonFragment;
+import space.levan.myclass.tool.StatusBarCompat;
 import space.levan.myclass.utils.InfoUtil;
 import space.levan.myclass.utils.NetUtil;
 
@@ -53,6 +54,9 @@ public class ScheduleActivity extends AppCompatActivity implements MaterialTabLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule);
+
+        StatusBarCompat.setStatusBarColor(this);
+
         ButterKnife.bind(this);
 
         setTitle("课程表");

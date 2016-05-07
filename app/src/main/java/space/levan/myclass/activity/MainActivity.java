@@ -1,5 +1,6 @@
 package space.levan.myclass.activity;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -18,12 +19,19 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.tencent.android.tpush.XGIOperateCallback;
+import com.tencent.android.tpush.XGPushBaseReceiver;
+import com.tencent.android.tpush.XGPushManager;
+import com.tencent.android.tpush.XGPushReceiver;
+import com.tencent.android.tpush.XGPushRegisterResult;
 
 import org.json.JSONObject;
 
@@ -72,6 +80,20 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         mNavigationView.setNavigationItemSelectedListener(this);
+
+        Context context = getApplicationContext();
+        XGPushManager.registerPush(context, new XGIOperateCallback() {
+            @Override
+            public void onSuccess(Object o, int i) {
+                Toast.makeText(MainActivity.this, ""+o, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFail(Object o, int i, String s) {
+                Log.d("WZY","注册失败，错误码：" + i + "错误信息：" + s);
+            }
+        });
+
 
         /**
          * 用来判断本地是否有token
