@@ -86,7 +86,7 @@ public class LessonFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return data == null ? null : data.size();
+            return data == null ? 0 : data.size();
         }
 
     }
