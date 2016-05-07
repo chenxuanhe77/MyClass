@@ -28,6 +28,32 @@ public class InfoUtil {
     }
 
     /**
+     * 重载saveUserInfo用于保存个人档案
+     * @param context
+     * @param mStuID
+     * @param mStuName
+     * @param mStuQQ
+     * @param mStuTEL
+     * @param mStuAvatar
+     * @return
+     */
+    public static boolean saveUserInfo(Context context,String mStuWeek,
+                                       String mStuID,
+                                       String mStuName,String mStuQQ,
+                                       String mStuTEL,String mStuAvatar) {
+        SharedPreferences sp = context.getSharedPreferences("UserData",Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = sp.edit();
+        edit.putString("StuWeek",mStuWeek);
+        edit.putString("StuID",mStuID);
+        edit.putString("StuName",mStuName);
+        edit.putString("StuQQ",mStuQQ);
+        edit.putString("StuTEL",mStuTEL);
+        edit.putString("StuAvatar",mStuAvatar);
+        edit.commit();
+        return true;
+    }
+
+    /**
      * 读取登录的token实现不注销就免登录
      * @param context
      * @return
@@ -49,30 +75,6 @@ public class InfoUtil {
         SharedPreferences sp = context.getSharedPreferences("UserData",Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = sp.edit();
         edit.clear();
-        edit.commit();
-        return true;
-    }
-
-    /**
-     * 重载saveUserInfo用于保存个人档案
-     * @param context
-     * @param mStuID
-     * @param mStuName
-     * @param mStuQQ
-     * @param mStuTEL
-     * @param mStuAvatar
-     * @return
-     */
-    public static boolean saveUserInfo(Context context,String mStuID,
-                                       String mStuName,String mStuQQ,
-                                       String mStuTEL,String mStuAvatar) {
-        SharedPreferences sp = context.getSharedPreferences("UserData",Context.MODE_PRIVATE);
-        SharedPreferences.Editor edit = sp.edit();
-        edit.putString("StuID",mStuID);
-        edit.putString("StuName",mStuName);
-        edit.putString("StuQQ",mStuQQ);
-        edit.putString("StuTEL",mStuTEL);
-        edit.putString("StuAvatar",mStuAvatar);
         edit.commit();
         return true;
     }
@@ -118,5 +120,18 @@ public class InfoUtil {
         userMap.put("StuTEL",mStuTEL);
         userMap.put("StuAvatar",mStuAvatar);
         return userMap;
+    }
+
+    /**
+     * 读取当前周
+     * @param context
+     * @return
+     */
+    public static Map<String,String> getWeek(Context context) {
+        SharedPreferences sp = context.getSharedPreferences("UserData",Context.MODE_PRIVATE);
+        String mWeek = sp.getString("StuWeek",null);
+        Map<String,String> weekMap = new HashMap<>();
+        weekMap.put("StuWeek",mWeek);
+        return weekMap;
     }
 }

@@ -137,11 +137,15 @@ public class CampusCardActivity extends AppCompatActivity {
                                 for (int i = 0;i < jsonArray.length();i++ ){
                                     JSONObject jo = (JSONObject) jsonArray.get(i);
                                     String Time = jo.getString("time");
-                                    String Trade = jo.getString("trade");
+                                    Double Trade = jo.getDouble("trade");
 
                                     CardInfo = new HashMap<>();
                                     CardInfo.put("Time","时间：" + Time);
-                                    CardInfo.put("Trade","消费金额：" + Trade);
+                                    if (Trade > 0) {
+                                        CardInfo.put("Trade","充值金额：" + Trade);
+                                    } else {
+                                        CardInfo.put("Trade","消费金额：" + Trade);
+                                    }
 
                                     CardInfos.add(CardInfo);
                                 }
@@ -205,7 +209,16 @@ public class CampusCardActivity extends AppCompatActivity {
                         new int[]{R.id.card_time,R.id.card_trade});
                 mCardName.setText(cardName);
                 mCardID.setText(cardID);
-                mCardBalance.setText(cardBalance);
+                Double i = Double.parseDouble(cardBalance);
+                if (i > 50) {
+                    String balance = i + "";
+                    mCardBalance.setText(balance);
+                } else {
+                    String balance = i + "";
+                    mCardBalance.setText(balance);
+                    setToast("余额不足，请记得充值");
+                }
+                
                 mListView.setAdapter(adapter);
                 mProDialog.dismiss();
             }

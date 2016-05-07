@@ -167,18 +167,25 @@ public class NetUtil {
     }
 
     /**
-     * 利用Token获取课程表
+     *
      * @param mToken
+     * @param mCode
+     * @param mWeek
      * @return
      */
-    public static String getSchedule(String mToken) {
+    public static String getSchedule(String mToken,int mCode,String mWeek) {
 
         try {
-            String URL = BaseURL + "ticknet/schedule?token=" +
-                    URLEncoder.encode(mToken,"UTF-8");
-
-            return NetUtil.NetConn(URL);
-
+            if (mCode == 1) {
+                String URL = BaseURL + "ticknet/schedule?token=" +
+                        URLEncoder.encode(mToken,"UTF-8");
+                return NetUtil.NetConn(URL);
+            } else {
+                String URL = BaseURL + "ticknet/schedule?token=" +
+                        URLEncoder.encode(mToken,"UTF-8") + "&week=" +
+                        URLEncoder.encode(mWeek,"UTF-8");
+                return NetUtil.NetConn(URL);
+            }
         }catch (Exception e) {
             e.printStackTrace();
         }
