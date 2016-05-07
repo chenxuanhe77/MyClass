@@ -82,17 +82,7 @@ public class MainActivity extends AppCompatActivity
         mNavigationView.setNavigationItemSelectedListener(this);
 
         Context context = getApplicationContext();
-        XGPushManager.registerPush(context, new XGIOperateCallback() {
-            @Override
-            public void onSuccess(Object o, int i) {
-                Toast.makeText(MainActivity.this, ""+o, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onFail(Object o, int i, String s) {
-                Log.d("WZY","注册失败，错误码：" + i + "错误信息：" + s);
-            }
-        });
+        XGPushManager.registerPush(context);
 
 
         /**

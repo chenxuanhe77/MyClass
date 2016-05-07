@@ -127,6 +127,7 @@ public class ScheduleActivity extends AppCompatActivity implements MaterialTabLi
                         e.printStackTrace();
                     }
                 } else {
+                    mProDialog.dismiss();
                     showToast("数据异常");
                 }
             }
