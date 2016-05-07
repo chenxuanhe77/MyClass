@@ -10,11 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import space.levan.myclass.R;
 
 /**
@@ -25,6 +23,9 @@ public class LessonFragment extends Fragment {
     private List<HashMap<String, Object>> data = new ArrayList<>(0);
     private RecyclerView recyclerView;
 
+    /**
+     创新视图
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -35,12 +36,19 @@ public class LessonFragment extends Fragment {
         return view;
     }
 
+    /**
+     * 提供一个合适的构造函数，取决于数据集
+     *
+     * @param data
+     */
     public void update(List<HashMap<String, Object>> data) {
         this.data = data;
         if (recyclerView != null) {
             recyclerView.getAdapter().notifyDataSetChanged();
         }
     }
+
+
 
     class DayCourseAdapter extends RecyclerView.Adapter<CourseHolder>{
 
@@ -49,7 +57,9 @@ public class LessonFragment extends Fragment {
         DayCourseAdapter() {
             inflater = LayoutInflater.from(getContext());
         }
-
+/**
+ * 创建新视图（由布局管理器调用）
+ * */
         @Override
         public CourseHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = inflater.inflate(R.layout.item_class, parent, false);
@@ -58,7 +68,9 @@ public class LessonFragment extends Fragment {
             view.setBackgroundResource(typedValue.resourceId);
             return new CourseHolder(view);
         }
-
+/**
+ * 更换视图内容Bind
+ * */
         @Override
         public void onBindViewHolder(CourseHolder holder, int position) {
             HashMap<String, Object> course = data.get(position);
@@ -74,7 +86,7 @@ public class LessonFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return data == null ? 0 : data.size();
+            return data == null ? null : data.size();
         }
 
     }

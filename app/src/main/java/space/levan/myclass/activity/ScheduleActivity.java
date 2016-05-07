@@ -84,7 +84,7 @@ public class ScheduleActivity extends AppCompatActivity implements MaterialTabLi
         }
 
         Calendar calendar = Calendar.getInstance();
-        int temp = calendar.get(Calendar.DAY_OF_WEEK) - 2;
+        int temp = calendar.get(Calendar.DAY_OF_WEEK)-2;
         mViewPager.setCurrentItem(temp);
 
         Map<String, String> loginInfo = InfoUtil.getLoginInfo(ScheduleActivity.this);

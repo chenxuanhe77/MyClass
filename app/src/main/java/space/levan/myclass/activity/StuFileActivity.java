@@ -56,6 +56,7 @@ public class StuFileActivity extends AppCompatActivity {
 
     /**
      * 校验手机号
+     *
      * @param mobile
      * @return 校验通过返回true，否则返回false
      */
@@ -65,6 +66,7 @@ public class StuFileActivity extends AppCompatActivity {
 
     /**
      * 传递TAG来判断用户点的是修改QQ还是修改TEL
+     *
      * @param view
      */
     @OnClick({R.id.change_QQ, R.id.change_TEL})
@@ -97,6 +99,7 @@ public class StuFileActivity extends AppCompatActivity {
 
     /**
      * 用于界面返回按钮
+     *
      * @param item
      * @return
      */
@@ -144,7 +147,7 @@ public class StuFileActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(StuFileActivity.this,"请求头像失败，请重新打开App",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(StuFileActivity.this, "请求头像失败，请重新打开App", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -154,6 +157,7 @@ public class StuFileActivity extends AppCompatActivity {
 
     /**
      * 根据tag的不同来判断是修改QQ还是修改TEL
+     *
      * @param tag
      */
     public void ChangeInfo(final int tag) {
@@ -163,9 +167,9 @@ public class StuFileActivity extends AppCompatActivity {
         final EditText editText = (EditText) view.findViewById(R.id.change_info);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(StuFileActivity.this);
-        if(tag == 1){
+        if (tag == 1) {
             builder.setTitle("修改QQ");
-        }else {
+        } else {
             builder.setTitle("修改电话");
         }
         builder.setView(view);
@@ -179,9 +183,9 @@ public class StuFileActivity extends AppCompatActivity {
 
                 if (Info.isEmpty()) {
 
-                    Toast.makeText(StuFileActivity.this,"修改的信息不能为空",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(StuFileActivity.this, "修改的信息不能为空", Toast.LENGTH_SHORT).show();
 
-                }else {
+                } else {
                     new Thread() {
                         @Override
                         public void run() {
@@ -192,23 +196,23 @@ public class StuFileActivity extends AppCompatActivity {
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        mProDialog = ProgressDialog.show(StuFileActivity.this,"","加载中，请稍候...");
+                                        mProDialog = ProgressDialog.show(StuFileActivity.this, "", "加载中，请稍候...");
                                     }
                                 });
-                                final String result = NetUtil.changeUserInfo(mToken,Info,TEL);
+                                final String result = NetUtil.changeUserInfo(mToken, Info, TEL);
                                 if (result != null) {
-                                    getResult(result,tag,Info);
-                                }else {
+                                    getResult(result, tag, Info);
+                                } else {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
                                             mProDialog.dismiss();
-                                            Toast.makeText(StuFileActivity.this,"请求失败",Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(StuFileActivity.this, "请求失败", Toast.LENGTH_SHORT).show();
                                         }
                                     });
                                 }
 
-                            } else if (tag == 2){
+                            } else if (tag == 2) {
                                 /**
                                  * 这里判断是否为手机号
                                  */
@@ -216,27 +220,27 @@ public class StuFileActivity extends AppCompatActivity {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            mProDialog = ProgressDialog.show(StuFileActivity.this,"","加载中，请稍候...");
+                                            mProDialog = ProgressDialog.show(StuFileActivity.this, "", "加载中，请稍候...");
                                         }
                                     });
-                                    final String result = NetUtil.changeUserInfo(mToken,QQ,Info);
+                                    final String result = NetUtil.changeUserInfo(mToken, QQ, Info);
                                     if (result != null) {
-                                        getResult(result,tag,Info);
-                                    }else {
+                                        getResult(result, tag, Info);
+                                    } else {
                                         runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
                                                 mProDialog.dismiss();
-                                                Toast.makeText(StuFileActivity.this,"请求失败",Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(StuFileActivity.this, "请求失败", Toast.LENGTH_SHORT).show();
                                             }
                                         });
                                     }
-                                }else {
+                                } else {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
                                             Toast.makeText(StuFileActivity.this,
-                                                    "请输入正确的手机号",Toast.LENGTH_SHORT).show();
+                                                    "请输入正确的手机号", Toast.LENGTH_SHORT).show();
                                         }
                                     });
                                 }
@@ -252,7 +256,7 @@ public class StuFileActivity extends AppCompatActivity {
                          * @param tag
                          * @param str
                          */
-                        public void getResult(String result,final int tag, final String str) {
+                        public void getResult(String result, final int tag, final String str) {
 
                             try {
                                 JSONObject jsonObject = new JSONObject(result);
@@ -261,17 +265,17 @@ public class StuFileActivity extends AppCompatActivity {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            Toast.makeText(StuFileActivity.this,message,Toast.LENGTH_SHORT).show();
-                                            boolean isSaveSuccess = InfoUtil.updateUserInfo(StuFileActivity.this,tag,str);
-                                            if(isSaveSuccess) {
+                                            Toast.makeText(StuFileActivity.this, message, Toast.LENGTH_SHORT).show();
+                                            boolean isSaveSuccess = InfoUtil.updateUserInfo(StuFileActivity.this, tag, str);
+                                            if (isSaveSuccess) {
                                                 initInfo();
                                                 mProDialog.dismiss();
-                                            }else {
-                                                Toast.makeText(StuFileActivity.this,"更新数据保存失败",Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                Toast.makeText(StuFileActivity.this, "更新数据保存失败", Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                     });
-                                } else if(jsonObject.getInt("error") == 2) {
+                                } else if (jsonObject.getInt("error") == 2) {
                                     InfoUtil.deleteUserInfo(StuFileActivity.this);
                                     runOnUiThread(new Runnable() {
                                         @Override
@@ -282,12 +286,12 @@ public class StuFileActivity extends AppCompatActivity {
                                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                             startActivity(intent);
                                             Toast.makeText(StuFileActivity.this,
-                                                    "数据异常，请重新登录帐号",Toast.LENGTH_SHORT).show();
+                                                    "数据异常，请重新登录帐号", Toast.LENGTH_SHORT).show();
                                         }
                                     });
                                 }
 
-                            }catch (Exception e) {
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
@@ -300,12 +304,6 @@ public class StuFileActivity extends AppCompatActivity {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).
                 setTextColor(getResources().getColor(R.color.colorPrimary));
     }
+}
 
 
-<<<<<<< HEAD
-}
-=======
-        return super.onOptionsItemSelected(item);
-    }
-}
->>>>>>> refs/remotes/WangZhiYao/master
