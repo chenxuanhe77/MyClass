@@ -153,13 +153,9 @@ public class ScheduleActivity extends AppCompatActivity implements MaterialTabLi
             JSONObject Object = jsonObject.getJSONObject("data");
             JSONObject data = Object.getJSONObject("data");
             weekCourses = new List[7];
-<<<<<<< HEAD
-            for (int i = 1; i < 7; i++) {
-                weekCourses[i-1]= new ArrayList<>();
-=======
+
             for (int i = 1; i <= 7; i++) {
                 weekCourses[i - 1] = new ArrayList<>();
->>>>>>> refs/remotes/WangZhiYao/master
                 JSONObject day = data.getJSONObject(""+i);
                 List<HashMap<String, Object>> DayClass = new ArrayList<>();
                 for (int n = 1; n <= 5; n++) {

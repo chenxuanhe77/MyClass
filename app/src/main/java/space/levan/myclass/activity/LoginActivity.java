@@ -108,6 +108,7 @@ public class LoginActivity extends AppCompatActivity {
     public void Login() {
         mButton.setClickable(false);
         mButton.setText("Loading...");
+
         final String username = mUserName.getText().toString().trim();
         final String password = mPassWord.getText().toString().trim();
 
